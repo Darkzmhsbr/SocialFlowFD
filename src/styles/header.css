@@ -1,0 +1,38 @@
+.sf-header {
+  border-bottom: 1px solid var(--sf-border);
+  background: var(--sf-surface);
+}
+
+.sf-header__brand {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sf-header__logo {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--sf-radius-sm);
+  background: linear-gradient(135deg, var(--sf-accent), #ff6fae);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: #0b0d12;
+}
+
+.sf-header__name {
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 640px) {
+  .sf-header__brand {
+    padding: 16px;
+  }
+}

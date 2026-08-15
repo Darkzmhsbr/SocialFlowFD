@@ -1,0 +1,30 @@
+.sf-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--sf-text-secondary);
+  font-size: 14px;
+}
+
+.sf-spinner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2.5px solid var(--sf-border);
+  border-top-color: var(--sf-accent);
+  animation: sf-spin 0.7s linear infinite;
+}
+
+@keyframes sf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sf-state--error {
+  color: var(--sf-error);
+}

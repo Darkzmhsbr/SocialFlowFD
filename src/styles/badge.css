@@ -1,0 +1,34 @@
+.sf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--sf-border);
+}
+
+.sf-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.sf-badge--success {
+  color: var(--sf-success);
+  border-color: rgba(53, 209, 143, 0.35);
+  background: rgba(53, 209, 143, 0.08);
+}
+
+.sf-badge--error {
+  color: var(--sf-error);
+  border-color: rgba(255, 92, 115, 0.35);
+  background: rgba(255, 92, 115, 0.08);
+}
+
+.sf-badge--neutral {
+  color: var(--sf-text-secondary);
+}

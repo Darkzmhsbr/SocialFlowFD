@@ -1,0 +1,45 @@
+.sf-button {
+  border: 1px solid transparent;
+  border-radius: var(--sf-radius-sm);
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.sf-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.sf-button--primary {
+  background: var(--sf-accent);
+  color: #ffffff;
+}
+
+.sf-button--primary:hover:not(:disabled) {
+  background: var(--sf-accent-hover);
+}
+
+.sf-button--secondary {
+  background: transparent;
+  border-color: var(--sf-border);
+  color: var(--sf-text-primary);
+}
+
+.sf-button--secondary:hover:not(:disabled) {
+  border-color: var(--sf-text-muted);
+}
+
+.sf-button--danger {
+  background: transparent;
+  border-color: var(--sf-border);
+  color: var(--sf-error);
+}
+
+.sf-button--danger:hover:not(:disabled) {
+  border-color: var(--sf-error);
+  background: rgba(255, 92, 115, 0.08);
+}

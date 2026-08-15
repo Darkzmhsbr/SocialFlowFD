@@ -1,0 +1,68 @@
+.sf-account-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sf-account-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--sf-surface-raised);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  flex-wrap: wrap;
+}
+
+.sf-account-card__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--sf-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--sf-text-secondary);
+}
+
+.sf-account-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sf-account-card__info {
+  flex: 1;
+  min-width: 160px;
+}
+
+.sf-account-card__username {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.sf-account-card__type {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--sf-text-secondary);
+}
+
+.sf-account-card__actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .sf-account-card__actions {
+    width: 100%;
+  }
+
+  .sf-account-card__actions .sf-button {
+    flex: 1;
+  }
+}
