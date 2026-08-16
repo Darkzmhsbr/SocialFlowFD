@@ -1,0 +1,85 @@
+/* Layout wrapper: centraliza o card, usa o mesmo max-width das outras pages
+   mas força alinhamento em coluna com padding extra em cima pra o card não
+   colar no header. */
+.sf-auth {
+  align-items: center;
+  padding-top: 32px;
+}
+
+.sf-auth__card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  background: var(--sf-surface);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sf-auth__title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--sf-text-primary);
+}
+
+.sf-auth__subtitle {
+  font-size: 14px;
+  color: var(--sf-text-secondary);
+  margin-top: -12px; /* colar mais no title */
+}
+
+.sf-auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sf-auth__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sf-auth__error {
+  padding: 10px 12px;
+  background: rgba(255, 92, 115, 0.08);
+  border: 1px solid rgba(255, 92, 115, 0.35);
+  border-radius: var(--sf-radius-sm);
+  color: var(--sf-error);
+  font-size: 13px;
+}
+
+.sf-auth__submit {
+  margin-top: 4px;
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.sf-auth__footer {
+  font-size: 13px;
+  color: var(--sf-text-secondary);
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--sf-border);
+  margin-top: 4px;
+}
+
+.sf-auth__footer a {
+  color: var(--sf-accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.sf-auth__footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .sf-auth__card {
+    padding: 24px 20px;
+  }
+}

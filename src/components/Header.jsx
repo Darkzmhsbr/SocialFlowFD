@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import UserMenu from './UserMenu.jsx';
 import '../styles/header.css';
 
 // Nav lives in the header so every page picks up the same shell without
@@ -31,6 +32,8 @@ export default function Header() {
             </NavLink>
           ))}
         </nav>
+
+        <UserMenu />
       </div>
     </header>
   );

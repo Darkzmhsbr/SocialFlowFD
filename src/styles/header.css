@@ -74,3 +74,75 @@
     font-size: 13px;
   }
 }
+
+/* --- Phase 3.2: UserMenu (right side of the header) -------------------- */
+
+.sf-user-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sf-user-menu__loading {
+  color: var(--sf-text-muted);
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+.sf-user-menu__link {
+  padding: 6px 12px;
+  border-radius: var(--sf-radius-sm);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--sf-text-secondary);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.sf-user-menu__link:hover {
+  color: var(--sf-text-primary);
+  background: var(--sf-surface-raised);
+}
+
+.sf-user-menu__link--primary {
+  color: var(--sf-text-primary);
+  background: var(--sf-accent);
+}
+
+.sf-user-menu__link--primary:hover {
+  background: var(--sf-accent);
+  filter: brightness(1.08);
+}
+
+.sf-user-menu__greeting {
+  font-size: 13px;
+  color: var(--sf-text-secondary);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-user-menu__logout {
+  padding: 6px 10px;
+  border-radius: var(--sf-radius-sm);
+  background: transparent;
+  border: 1px solid var(--sf-border);
+  color: var(--sf-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.sf-user-menu__logout:hover {
+  color: var(--sf-text-primary);
+  border-color: var(--sf-text-muted);
+}
+
+@media (max-width: 640px) {
+  .sf-user-menu__greeting {
+    display: none; /* keep only the Sair button on mobile so the header doesn't wrap forever */
+  }
+}
