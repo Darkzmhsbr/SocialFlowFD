@@ -1,18 +1,22 @@
-import { request, apiUrl } from './api.js';
+import { apiUrl, request } from './api.js';
 
-// Connecting means leaving the SPA entirely - the browser is sent to the
-// backend's /connect route, which redirects again to Meta's own login page.
-// There is no token handling here; the frontend never sees one.
+// Fetches the authorize URL from the backend (requires auth so the
+// backend knows which user is starting the flow). The frontend then does
+// window.location.href = url to send the browser to Meta.
+export async function getAuthorizeUrl() {
+  const { url } = await request('/api/instagram/authorize-url');
+  return url;
+}
+
+// Kept for backwards compatibility with code that may still import it,
+// though ConnectInstagramButton no longer uses this direct-link approach.
+// It just returns the URL string of the (now removed) /connect endpoint.
 export function getConnectUrl() {
   return apiUrl('/api/instagram/connect');
 }
 
 export function listAccounts() {
   return request('/api/instagram/accounts');
-}
-
-export function getAccount(id) {
-  return request(`/api/instagram/accounts/${id}`);
 }
 
 export function disconnectAccount(id) {
