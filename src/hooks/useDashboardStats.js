@@ -10,8 +10,9 @@ export function useDashboardStats() {
     setStatus('loading');
     setError(null);
     try {
-      const { data } = await dashboardService.getStats();
-      setStats(data);
+      // Backend returns { success, counts, activity, upcomingPosts } at root.
+      const { counts, activity, upcomingPosts } = await dashboardService.getStats();
+      setStats({ counts, activity, upcomingPosts });
       setStatus('success');
     } catch (err) {
       setError(err.message);

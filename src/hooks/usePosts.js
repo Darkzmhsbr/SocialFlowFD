@@ -13,10 +13,13 @@ export function usePosts(statusFilter = null) {
     setStatus('loading');
     setError(null);
     try {
-      const { data } = await postsService.listPosts(
+      // The backend response is { success: true, posts: [...] } - properties
+      // are at the root of the body, matching how listAccounts is consumed
+      // elsewhere in this codebase.
+      const { posts: fetched } = await postsService.listPosts(
         statusFilter ? { status: statusFilter } : {}
       );
-      setPosts(data.posts);
+      setPosts(fetched || []);
       setStatus('success');
     } catch (err) {
       setError(err.message);

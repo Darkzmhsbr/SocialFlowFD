@@ -33,6 +33,7 @@ export default function PostEditor() {
   const [caption, setCaption] = useState('');
   const [scheduledFor, setScheduledFor] = useState(null);
   const [medias, setMedias] = useState([]);
+  const [existingStatus, setExistingStatus] = useState(null);
 
   // Load existing post when in edit mode.
   useEffect(() => {
@@ -40,14 +41,15 @@ export default function PostEditor() {
     let cancelled = false;
     (async () => {
       try {
-        const { data } = await postsService.getPost(id);
+        // Backend returns { success, post } at root.
+        const { post } = await postsService.getPost(id);
         if (cancelled) return;
-        const post = data.post;
         setInstagramAccountId(post.instagramAccount?.id || '');
         setType(post.type);
         setCaption(post.caption || '');
         setScheduledFor(post.scheduledFor ? new Date(post.scheduledFor) : null);
         setMedias(post.medias || []);
+        setExistingStatus(post.status);
       } catch (err) {
         if (!cancelled) {
           setToast({ tone: 'error', message: `Erro ao carregar post: ${err.message}` });
@@ -93,7 +95,7 @@ export default function PostEditor() {
     });
   };
 
-  const validate = () => {
+  const validate = (asSchedule) => {
     if (!instagramAccountId) return 'Selecione uma conta do Instagram.';
     const rules = POST_TYPE_RULES[type];
     if (medias.length < rules.min || medias.length > rules.max) {
@@ -104,11 +106,17 @@ export default function PostEditor() {
         return `A mídia ${m.type} não é permitida em ${type}.`;
       }
     }
+    if (asSchedule && !scheduledFor) {
+      return 'Escolha uma data no campo "Agendar para" antes de agendar.';
+    }
     return null;
   };
 
-  const submit = async () => {
-    const validationError = validate();
+  // asSchedule=true forces sending scheduledFor; false saves as draft
+  // (ignores the picked date, if any). This maps the two visible buttons
+  // to the two intents without hiding what the user typed.
+  const submit = async (asSchedule) => {
+    const validationError = validate(asSchedule);
     if (validationError) {
       setToast({ tone: 'error', message: validationError });
       return;
@@ -120,7 +128,7 @@ export default function PostEditor() {
       type,
       caption: caption || null,
       mediaIds: medias.map((m) => m.id),
-      scheduledFor: scheduledFor ? scheduledFor.toISOString() : null,
+      scheduledFor: asSchedule && scheduledFor ? scheduledFor.toISOString() : null,
     };
 
     try {
@@ -129,7 +137,7 @@ export default function PostEditor() {
       } else {
         await postsService.createPost(payload);
       }
-      const successMsg = scheduledFor ? '✓ Post agendado.' : '✓ Rascunho salvo.';
+      const successMsg = asSchedule ? '✓ Post agendado.' : '✓ Rascunho salvo.';
       setToast({ tone: 'success', message: successMsg });
       setTimeout(() => navigate('/posts'), 900);
     } catch (err) {
@@ -153,6 +161,8 @@ export default function PostEditor() {
   }
 
   const isCarousel = type === 'FEED_CAROUSEL';
+  const scheduleLabel = isEditing && existingStatus === 'SCHEDULED' ? 'Atualizar agendamento' : 'Agendar post';
+  const draftLabel = isEditing && existingStatus === 'DRAFT' ? 'Salvar rascunho' : 'Salvar como rascunho';
 
   return (
     <div className="sf-page">
@@ -221,19 +231,24 @@ export default function PostEditor() {
             <div className="sf-post-editor__submit">
               <button
                 type="button"
-                className="sf-button sf-button--primary"
-                onClick={submit}
+                className="sf-button sf-button--secondary"
+                onClick={() => submit(false)}
                 disabled={saving}
               >
-                {saving
-                  ? 'Salvando...'
-                  : scheduledFor
-                  ? isEditing
-                    ? 'Salvar agendamento'
-                    : 'Agendar post'
-                  : isEditing
-                  ? 'Salvar rascunho'
-                  : 'Salvar como rascunho'}
+                {saving ? 'Salvando...' : draftLabel}
+              </button>
+              <button
+                type="button"
+                className="sf-button sf-button--primary"
+                onClick={() => submit(true)}
+                disabled={saving || !scheduledFor}
+                title={
+                  !scheduledFor
+                    ? 'Escolha uma data no campo "Agendar para" acima'
+                    : undefined
+                }
+              >
+                {saving ? 'Salvando...' : scheduleLabel}
               </button>
             </div>
           </div>

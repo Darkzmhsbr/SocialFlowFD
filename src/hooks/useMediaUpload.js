@@ -11,9 +11,10 @@ export function useMediaUpload() {
     setStatus('uploading');
     setError(null);
     try {
-      const res = await mediaService.uploadMediaFile(file);
+      // Backend returns { success, media: { id, type, url, ... } } at root.
+      const { media } = await mediaService.uploadMediaFile(file);
       setStatus('idle');
-      return res.data.media; // { id, type, url, ... }
+      return media;
     } catch (err) {
       setError(err.message);
       setStatus('error');
