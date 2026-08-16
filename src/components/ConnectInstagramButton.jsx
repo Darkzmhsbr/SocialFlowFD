@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getAuthorizeUrl } from '../services/instagramService.js';
+import '../styles/button.css';
 
 // Fetches the authorize URL (with Bearer attached automatically), then
 // redirects the browser to Meta. This replaces the old <a href> pattern
