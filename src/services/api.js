@@ -13,9 +13,19 @@ class ApiError extends Error {
 }
 
 async function request(path, options = {}) {
+  // FormData uploads need the browser to set Content-Type itself (so the
+  // multipart boundary is included). Forcing application/json in that case
+  // breaks the request. We only default to JSON when the caller didn't set
+  // a Content-Type and the body isn't a FormData instance.
+  const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+  const headers = { ...(options.headers || {}) };
+  if (!isFormData && !('Content-Type' in headers) && !('content-type' in headers)) {
+    headers['Content-Type'] = 'application/json';
+  }
+
   const response = await fetch(`${API_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
     ...options,
+    headers,
   });
 
   let body = null;

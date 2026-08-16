@@ -29,6 +29,18 @@
   background: rgba(255, 92, 115, 0.08);
 }
 
+.sf-badge--warning {
+  color: var(--sf-warning);
+  border-color: rgba(245, 185, 92, 0.35);
+  background: rgba(245, 185, 92, 0.08);
+}
+
+.sf-badge--accent {
+  color: var(--sf-accent);
+  border-color: rgba(124, 92, 255, 0.4);
+  background: rgba(124, 92, 255, 0.08);
+}
+
 .sf-badge--neutral {
   color: var(--sf-text-secondary);
 }
