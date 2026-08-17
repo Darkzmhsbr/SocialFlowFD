@@ -4,6 +4,7 @@ import RequireAuth from './components/RequireAuth.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Posts from './pages/Posts.jsx';
 import PostEditor from './pages/PostEditor.jsx';
+import AccountStatus from './pages/AccountStatus.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 
@@ -47,6 +48,14 @@ export default function App() {
             element={
               <RequireAuth>
                 <PostEditor />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/accounts/:id/status"
+            element={
+              <RequireAuth>
+                <AccountStatus />
               </RequireAuth>
             }
           />

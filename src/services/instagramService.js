@@ -19,6 +19,15 @@ export function listAccounts() {
   return request('/api/instagram/accounts');
 }
 
+// Full aggregated status for a single account: identity, connection
+// metadata, counters, last published preview, and best-effort live Meta
+// metrics. Backend returns the payload spread at root (per apiResponse
+// convention), so callers destructure {account, counts, lastPublished,
+// metaProfile} directly.
+export function getAccountStatus(id) {
+  return request(`/api/instagram/accounts/${id}/status`);
+}
+
 export function disconnectAccount(id) {
   return request(`/api/instagram/accounts/${id}`, { method: 'DELETE' });
 }

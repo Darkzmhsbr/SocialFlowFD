@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import StatusBadge from './StatusBadge.jsx';
 import '../styles/instagramAccountCard.css';
 
@@ -34,9 +35,12 @@ export default function InstagramAccountCard({ account, onDisconnect }) {
       </div>
 
       <div className="sf-account-card__actions">
-        <button type="button" className="sf-button sf-button--secondary" disabled>
+        <Link
+          className="sf-button sf-button--secondary"
+          to={`/accounts/${account.id}/status`}
+        >
           Gerenciar
-        </button>
+        </Link>
         <button
           type="button"
           className="sf-button sf-button--danger"

@@ -1,0 +1,227 @@
+/* AccountStatus page — BEM with sf- prefix. All colors, radii and font
+   come from the tokens declared in global.css. No new tokens introduced. */
+
+.sf-account-status__breadcrumb {
+  margin-bottom: 20px;
+}
+
+.sf-account-status__breadcrumb a {
+  color: var(--sf-text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.15s ease;
+}
+
+.sf-account-status__breadcrumb a:hover {
+  color: var(--sf-text-primary);
+}
+
+/* ---------- Identity card (top) ---------- */
+
+.sf-account-status__identity {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 20px;
+  align-items: center;
+  background: var(--sf-surface);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-lg);
+  box-shadow: var(--sf-shadow-card);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.sf-account-status__avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--sf-surface-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sf-text-secondary);
+  font-size: 28px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.sf-account-status__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sf-account-status__identity-body {
+  min-width: 0;
+}
+
+.sf-account-status__username {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--sf-text-primary);
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.sf-account-status__type {
+  font-size: 13px;
+  color: var(--sf-text-secondary);
+  margin-bottom: 10px;
+}
+
+.sf-account-status__identity-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ---------- Sections ---------- */
+
+.sf-account-status__section {
+  margin-bottom: 24px;
+}
+
+.sf-account-status__section-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--sf-text-muted);
+  margin-bottom: 12px;
+}
+
+/* ---------- Metric tiles grid ---------- */
+
+.sf-account-status__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.sf-account-status__tile {
+  background: var(--sf-surface);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  padding: 16px;
+  box-shadow: var(--sf-shadow-card);
+}
+
+.sf-account-status__tile-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sf-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.sf-account-status__tile-value {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--sf-text-primary);
+  line-height: 1.2;
+}
+
+.sf-account-status__tile-hint {
+  font-size: 12px;
+  color: var(--sf-text-secondary);
+  margin-top: 6px;
+}
+
+.sf-account-status__tile--warning .sf-account-status__tile-value {
+  color: var(--sf-warning);
+}
+
+.sf-account-status__tile--error .sf-account-status__tile-value {
+  color: var(--sf-error);
+}
+
+/* ---------- Last published preview ---------- */
+
+.sf-account-status__last-published {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  background: var(--sf-surface);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  padding: 16px;
+  box-shadow: var(--sf-shadow-card);
+}
+
+.sf-account-status__last-thumb {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--sf-radius-sm);
+  overflow: hidden;
+  background: var(--sf-surface-raised);
+  flex-shrink: 0;
+}
+
+.sf-account-status__last-thumb img,
+.sf-account-status__last-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sf-account-status__thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sf-text-muted);
+  font-size: 12px;
+}
+
+.sf-account-status__last-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sf-account-status__last-date {
+  font-size: 13px;
+  color: var(--sf-text-secondary);
+  margin-bottom: 8px;
+}
+
+.sf-account-status__last-caption {
+  font-size: 14px;
+  color: var(--sf-text-primary);
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 640px) {
+  .sf-account-status__identity {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .sf-account-status__avatar {
+    margin: 0 auto;
+  }
+
+  .sf-account-status__identity-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .sf-account-status__last-published {
+    grid-template-columns: 1fr;
+  }
+
+  .sf-account-status__last-thumb {
+    width: 100%;
+    height: 200px;
+  }
+}
