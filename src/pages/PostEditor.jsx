@@ -6,6 +6,7 @@ import PostTypeSelector from '../components/PostTypeSelector.jsx';
 import AccountPicker from '../components/AccountPicker.jsx';
 import MediaUploader from '../components/MediaUploader.jsx';
 import MediaGrid from '../components/MediaGrid.jsx';
+import CoverPicker from '../components/CoverPicker.jsx';
 import CaptionEditor from '../components/CaptionEditor.jsx';
 import ScheduleDateTimePicker from '../components/ScheduleDateTimePicker.jsx';
 import Toast from '../components/Toast.jsx';
@@ -34,6 +35,9 @@ export default function PostEditor() {
   const [scheduledFor, setScheduledFor] = useState(null);
   const [medias, setMedias] = useState([]);
   const [existingStatus, setExistingStatus] = useState(null);
+  // Rodada 2b: optional custom cover for FEED_VIDEO / REEL. Full media
+  // object (id, url, type) or null. Backend accepts coverMediaAssetId.
+  const [coverMedia, setCoverMedia] = useState(null);
 
   // Load existing post when in edit mode.
   useEffect(() => {
@@ -49,6 +53,7 @@ export default function PostEditor() {
         setCaption(post.caption || '');
         setScheduledFor(post.scheduledFor ? new Date(post.scheduledFor) : null);
         setMedias(post.medias || []);
+        setCoverMedia(post.cover || null);
         setExistingStatus(post.status);
       } catch (err) {
         if (!cancelled) {
@@ -64,7 +69,10 @@ export default function PostEditor() {
   }, [id, isEditing]);
 
   // If the user switches to a stricter type (e.g. CAROUSEL -> FEED_IMAGE),
-  // trim the media list to fit and warn.
+  // trim the media list to fit and warn. Also drop any cover that no
+  // longer makes sense — if the new type doesn't accept cover, clearing
+  // it locally keeps the submit payload aligned with what backend will
+  // accept (backend also auto-clears; this is UX for immediate feedback).
   const handleTypeChange = (nextType) => {
     setType(nextType);
     const rules = POST_TYPE_RULES[nextType];
@@ -73,6 +81,13 @@ export default function PostEditor() {
       setToast({
         tone: 'success',
         message: `As mídias extras foram removidas para caber no tipo ${nextType}.`,
+      });
+    }
+    if (!rules.allowsCover && coverMedia) {
+      setCoverMedia(null);
+      setToast({
+        tone: 'success',
+        message: `A capa foi removida — o tipo ${nextType} não aceita capa customizada.`,
       });
     }
   };
@@ -106,6 +121,12 @@ export default function PostEditor() {
         return `A mídia ${m.type} não é permitida em ${type}.`;
       }
     }
+    if (coverMedia && !rules.allowsCover) {
+      return `Posts do tipo ${type} não aceitam capa customizada.`;
+    }
+    if (coverMedia && coverMedia.type !== 'IMAGE') {
+      return 'A capa precisa ser uma imagem.';
+    }
     if (asSchedule && !scheduledFor) {
       return 'Escolha uma data no campo "Agendar para" antes de agendar.';
     }
@@ -129,6 +150,10 @@ export default function PostEditor() {
       caption: caption || null,
       mediaIds: medias.map((m) => m.id),
       scheduledFor: asSchedule && scheduledFor ? scheduledFor.toISOString() : null,
+      // Rodada 2b: always send an explicit value on update — backend
+      // uses undefined vs null semantics, and we want the user's UI
+      // state to be the source of truth (null wipes any existing cover).
+      coverMediaAssetId: coverMedia?.id ?? null,
     };
 
     try {
@@ -161,6 +186,13 @@ export default function PostEditor() {
   }
 
   const isCarousel = type === 'FEED_CAROUSEL';
+  // Rodada 2b: decides whether the Cover section renders and shifts the
+  // section numbering for Legenda/Agendamento (4/5 -> 5/6) so the user
+  // never sees a "hole" in the sequence.
+  const allowsCover = POST_TYPE_RULES[type]?.allowsCover;
+  const captionNum = allowsCover ? '5' : '4';
+  const scheduleNum = allowsCover ? '6' : '5';
+
   const scheduleLabel = isEditing && existingStatus === 'SCHEDULED' ? 'Atualizar agendamento' : 'Agendar post';
   const draftLabel = isEditing && existingStatus === 'DRAFT' ? 'Salvar rascunho' : 'Salvar como rascunho';
 
@@ -214,13 +246,24 @@ export default function PostEditor() {
               />
             </section>
 
+            {allowsCover && (
+              <section className="sf-post-editor__section">
+                <h3 className="sf-post-editor__section-title">4. Capa (opcional)</h3>
+                <CoverPicker
+                  value={coverMedia}
+                  onChange={setCoverMedia}
+                  disabled={saving}
+                />
+              </section>
+            )}
+
             <section className="sf-post-editor__section">
-              <h3 className="sf-post-editor__section-title">4. Legenda</h3>
+              <h3 className="sf-post-editor__section-title">{captionNum}. Legenda</h3>
               <CaptionEditor value={caption} onChange={setCaption} disabled={saving} />
             </section>
 
             <section className="sf-post-editor__section">
-              <h3 className="sf-post-editor__section-title">5. Agendamento</h3>
+              <h3 className="sf-post-editor__section-title">{scheduleNum}. Agendamento</h3>
               <ScheduleDateTimePicker
                 value={scheduledFor}
                 onChange={setScheduledFor}

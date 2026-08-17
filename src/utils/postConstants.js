@@ -22,12 +22,16 @@ export const POST_STATUS_LABELS = {
 
 // Rules mirrored from the backend (scheduledPostService.js). Kept here so
 // the composer can disable / warn without a round-trip to the server.
+//
+// Rodada 2b: allowsCover marks types that accept a custom cover image via
+// Meta's cover_url. Only FEED_VIDEO and REEL do — carousels and stories
+// ignore it, images don't have the concept.
 export const POST_TYPE_RULES = {
-  FEED_IMAGE:    { min: 1, max: 1,  allowed: ['IMAGE'] },
-  FEED_VIDEO:    { min: 1, max: 1,  allowed: ['VIDEO'] },
-  FEED_CAROUSEL: { min: 2, max: 10, allowed: ['IMAGE', 'VIDEO'] },
-  REEL:          { min: 1, max: 1,  allowed: ['VIDEO'] },
-  STORY:         { min: 1, max: 1,  allowed: ['IMAGE', 'VIDEO'] },
+  FEED_IMAGE:    { min: 1, max: 1,  allowed: ['IMAGE'],           allowsCover: false },
+  FEED_VIDEO:    { min: 1, max: 1,  allowed: ['VIDEO'],           allowsCover: true  },
+  FEED_CAROUSEL: { min: 2, max: 10, allowed: ['IMAGE', 'VIDEO'],  allowsCover: false },
+  REEL:          { min: 1, max: 1,  allowed: ['VIDEO'],           allowsCover: true  },
+  STORY:         { min: 1, max: 1,  allowed: ['IMAGE', 'VIDEO'],  allowsCover: false },
 };
 
 // Instagram caveats surfaced in the UI when a type is chosen.
