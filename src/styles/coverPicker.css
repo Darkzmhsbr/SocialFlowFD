@@ -1,0 +1,217 @@
+/* CoverPicker component — BEM with sf- prefix. All colors, radii and font
+   come from the tokens declared in global.css. No new tokens introduced. */
+
+.sf-cover-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- Empty state (no cover picked) ---------- */
+
+.sf-cover-picker__empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Current state (cover picked) ---------- */
+
+.sf-cover-picker__current {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: var(--sf-surface-raised);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  flex-wrap: wrap; /* keeps buttons close to the preview on wide screens
+                      and lets them drop below on narrow ones */
+}
+
+/* Preview keeps a fixed, portrait-friendly footprint on all screens.
+   object-fit: contain shows the whole image (with letterboxing over the
+   card background if needed) — critical here because a Reel cover is
+   often 9:16 and cropping to a square hides the actually-important part.
+   Previously the mobile media query forced 100% width + 200px height,
+   which crop-centered vertical images and showed only their middle. */
+.sf-cover-picker__preview {
+  width: 120px;
+  height: 160px;
+  border-radius: var(--sf-radius-sm);
+  overflow: hidden;
+  background: var(--sf-bg);
+  flex-shrink: 0;
+}
+
+.sf-cover-picker__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.sf-cover-picker__current-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Expandable panel ---------- */
+
+.sf-cover-picker__panel {
+  background: var(--sf-surface);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  box-shadow: var(--sf-shadow-card);
+  overflow: hidden;
+  animation: sf-cover-picker-fade 0.15s ease-out;
+}
+
+@keyframes sf-cover-picker-fade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sf-cover-picker__panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--sf-border);
+}
+
+.sf-cover-picker__tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.sf-cover-picker__tab {
+  background: none;
+  border: none;
+  color: var(--sf-text-secondary);
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--sf-radius-sm);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sf-cover-picker__tab:hover:not(.sf-cover-picker__tab--active) {
+  color: var(--sf-text-primary);
+  background: var(--sf-surface-raised);
+}
+
+.sf-cover-picker__tab--active {
+  color: var(--sf-text-primary);
+  background: var(--sf-surface-raised);
+  box-shadow: inset 0 -2px 0 var(--sf-accent);
+}
+
+/* ---------- Library tab ---------- */
+
+.sf-cover-picker__library {
+  padding: 16px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.sf-cover-picker__grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+}
+
+.sf-cover-picker__tile {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--sf-radius-sm);
+  background: var(--sf-surface-raised);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.sf-cover-picker__tile:hover {
+  border-color: var(--sf-text-muted);
+  transform: scale(1.02);
+}
+
+.sf-cover-picker__tile--selected {
+  border-color: var(--sf-accent);
+}
+
+.sf-cover-picker__tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sf-cover-picker__empty-library {
+  padding: 24px;
+  text-align: center;
+  color: var(--sf-text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.sf-cover-picker__empty-library p {
+  margin: 0;
+}
+
+/* ---------- Upload tab ---------- */
+
+.sf-cover-picker__upload {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* ---------- Shared helpers ---------- */
+
+.sf-cover-picker__hint {
+  font-size: 13px;
+  color: var(--sf-text-secondary);
+  margin: 0;
+}
+
+.sf-cover-picker__error {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--sf-error);
+}
+
+.sf-cover-picker__error p {
+  margin: 0;
+}
+
+.sf-cover-picker__error-msg {
+  font-size: 13px;
+  color: var(--sf-error);
+  margin: 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 640px) {
+  /* On very narrow screens the library grid still needs to be dense,
+     but the preview keeps its fixed portrait size — no override here. */
+  .sf-cover-picker__grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+}

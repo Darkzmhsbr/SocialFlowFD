@@ -43,7 +43,14 @@ function buildDeleteConfirmMessage(status) {
 export default function PostCard({ post, onArchive, onDelete }) {
   const [busy, setBusy] = useState(null); // 'archive' | 'delete' | null
 
-  const firstMedia = post.medias?.[0];
+  // Rodada 2b: when a custom cover was picked (only possible for FEED_VIDEO
+  // and REEL), show it as the card thumb — that's the image users saw and
+  // approved as "the face of this post", and it's what Instagram itself is
+  // showing on the feed grid. Fall back to the first media asset for
+  // everything else (images, carousels, stories, and videos without a
+  // custom cover).
+  const displayMedia = post.cover || post.medias?.[0];
+
   const canEdit = EDITABLE.has(post.status);
   const canDelete = !UNDELETABLE.has(post.status);
   const canArchive = post.status !== 'ARCHIVED' && post.status !== 'PUBLISHING';
@@ -71,12 +78,12 @@ export default function PostCard({ post, onArchive, onDelete }) {
   return (
     <article className="sf-post-card">
       <div className="sf-post-card__thumb">
-        {firstMedia ? (
-          firstMedia.type === 'IMAGE' ? (
-            <img src={firstMedia.url} alt="" />
+        {displayMedia ? (
+          displayMedia.type === 'IMAGE' ? (
+            <img src={displayMedia.url} alt="" />
           ) : (
             // eslint-disable-next-line jsx-a11y/media-has-caption
-            <video src={firstMedia.url} muted playsInline preload="metadata" />
+            <video src={displayMedia.url} muted playsInline preload="metadata" />
           )
         ) : (
           <div className="sf-post-card__thumb-placeholder">Sem mídia</div>
