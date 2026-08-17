@@ -11,7 +11,7 @@ export function getPost(id) {
   return request(`/api/posts/${id}`);
 }
 
-// Body: { instagramAccountId, type, caption?, mediaIds, scheduledFor? }
+// Body: { instagramAccountId, type, caption?, mediaIds, scheduledFor?, coverMediaAssetId? }
 export function createPost(body) {
   return request('/api/posts', {
     method: 'POST',
@@ -19,7 +19,7 @@ export function createPost(body) {
   });
 }
 
-// Body: any subset of { caption, type, mediaIds, scheduledFor }
+// Body: any subset of { caption, type, mediaIds, scheduledFor, coverMediaAssetId }
 export function updatePost(id, patch) {
   return request(`/api/posts/${id}`, {
     method: 'PATCH',
@@ -33,4 +33,12 @@ export function archivePost(id) {
 
 export function deletePost(id) {
   return request(`/api/posts/${id}`, { method: 'DELETE' });
+}
+
+// Rodada 3: fetch Instagram insights for a published post.
+// Backend returns { insights, cachedAt, isStale, notice? } spread at root.
+// Pass { refresh: true } to bypass 1h cache and re-fetch from Meta.
+export function getPostInsights(id, { refresh = false } = {}) {
+  const qs = refresh ? '?refresh=true' : '';
+  return request(`/api/posts/${id}/insights${qs}`);
 }

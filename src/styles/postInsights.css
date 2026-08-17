@@ -1,0 +1,191 @@
+/* PostInsightsModal — BEM with sf- prefix. All colors, radii and font
+   come from the tokens declared in global.css. No new tokens introduced. */
+
+/* ---------- Overlay ---------- */
+
+.sf-insights-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: sf-insights-fade-in 0.15s ease-out;
+}
+
+@keyframes sf-insights-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---------- Modal card ---------- */
+
+.sf-insights-modal {
+  background: var(--sf-surface);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-lg);
+  box-shadow: var(--sf-shadow-card);
+  width: 100%;
+  max-width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: sf-insights-slide-up 0.2s ease-out;
+}
+
+@keyframes sf-insights-slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sf-insights-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--sf-border);
+}
+
+.sf-insights-modal__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--sf-text-primary);
+}
+
+.sf-insights-modal__body {
+  padding: 20px 24px 24px;
+}
+
+/* ---------- Metric tiles grid ---------- */
+
+.sf-insights-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sf-insights-modal__tile {
+  background: var(--sf-surface-raised);
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  padding: 16px 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: border-color 0.15s ease;
+}
+
+.sf-insights-modal__tile:hover {
+  border-color: var(--sf-accent);
+}
+
+.sf-insights-modal__tile-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.sf-insights-modal__tile-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--sf-text-primary);
+  line-height: 1.1;
+}
+
+.sf-insights-modal__tile-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sf-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Notice banner (not-yet-ready) ---------- */
+
+.sf-insights-modal__notice {
+  background: var(--sf-surface-raised);
+  border: 1px solid var(--sf-warning);
+  border-radius: var(--sf-radius-md);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--sf-warning);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* ---------- Empty / error states ---------- */
+
+.sf-insights-modal__empty {
+  text-align: center;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.sf-insights-modal__empty-icon {
+  font-size: 36px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.sf-insights-modal__empty-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--sf-text-primary);
+}
+
+.sf-insights-modal__empty-desc {
+  font-size: 14px;
+  color: var(--sf-text-secondary);
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+/* ---------- Loading ---------- */
+
+.sf-insights-modal__loading {
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--sf-text-secondary);
+  font-size: 14px;
+}
+
+/* ---------- Footer (cached-at + refresh) ---------- */
+
+.sf-insights-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--sf-border);
+  flex-wrap: wrap;
+}
+
+.sf-insights-modal__cached-at {
+  font-size: 12px;
+  color: var(--sf-text-muted);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 640px) {
+  .sf-insights-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .sf-insights-modal {
+    max-height: 90vh;
+    border-radius: var(--sf-radius-lg) var(--sf-radius-lg) 0 0;
+  }
+
+  .sf-insights-modal__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

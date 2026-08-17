@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import StatusBadge from './StatusBadge.jsx';
+import PostInsightsModal from './PostInsightsModal.jsx';
 import { POST_TYPE_LABELS } from '../utils/postConstants.js';
 import { formatDateTime, formatRelative } from '../utils/formatDate.js';
 
@@ -42,6 +43,7 @@ function buildDeleteConfirmMessage(status) {
 
 export default function PostCard({ post, onArchive, onDelete }) {
   const [busy, setBusy] = useState(null); // 'archive' | 'delete' | null
+  const [showInsights, setShowInsights] = useState(false);
 
   // Rodada 2b: when a custom cover was picked (only possible for FEED_VIDEO
   // and REEL), show it as the card thumb — that's the image users saw and
@@ -54,6 +56,10 @@ export default function PostCard({ post, onArchive, onDelete }) {
   const canEdit = EDITABLE.has(post.status);
   const canDelete = !UNDELETABLE.has(post.status);
   const canArchive = post.status !== 'ARCHIVED' && post.status !== 'PUBLISHING';
+  // Rodada 3: insights are only meaningful for published posts with an
+  // instagramMediaId (the id Meta returns after /media_publish — needed
+  // to call /{media-id}/insights).
+  const canShowInsights = post.status === 'PUBLISHED' && Boolean(post.instagramMediaId);
 
   const handleArchive = async () => {
     if (!window.confirm('Arquivar este post?')) return;
@@ -76,82 +82,101 @@ export default function PostCard({ post, onArchive, onDelete }) {
   };
 
   return (
-    <article className="sf-post-card">
-      <div className="sf-post-card__thumb">
-        {displayMedia ? (
-          displayMedia.type === 'IMAGE' ? (
-            <img src={displayMedia.url} alt="" />
+    <>
+      <article className="sf-post-card">
+        <div className="sf-post-card__thumb">
+          {displayMedia ? (
+            displayMedia.type === 'IMAGE' ? (
+              <img src={displayMedia.url} alt="" />
+            ) : (
+              // eslint-disable-next-line jsx-a11y/media-has-caption
+              <video src={displayMedia.url} muted playsInline preload="metadata" />
+            )
           ) : (
-            // eslint-disable-next-line jsx-a11y/media-has-caption
-            <video src={displayMedia.url} muted playsInline preload="metadata" />
-          )
-        ) : (
-          <div className="sf-post-card__thumb-placeholder">Sem mídia</div>
-        )}
-        {post.medias?.length > 1 && (
-          <span className="sf-post-card__count">+{post.medias.length - 1}</span>
-        )}
-      </div>
-
-      <div className="sf-post-card__body">
-        <div className="sf-post-card__meta">
-          <span className="sf-post-card__type">{POST_TYPE_LABELS[post.type]}</span>
-          <StatusBadge status={post.status} />
-        </div>
-
-        {post.caption && (
-          <p className="sf-post-card__caption">
-            {post.caption.length > 140 ? `${post.caption.slice(0, 140)}...` : post.caption}
-          </p>
-        )}
-
-        <div className="sf-post-card__footer">
-          {post.instagramAccount && (
-            <span className="sf-post-card__account">@{post.instagramAccount.username}</span>
+            <div className="sf-post-card__thumb-placeholder">Sem mídia</div>
           )}
-          {post.scheduledFor && (
-            <span className="sf-post-card__date">
-              Agendado: {formatDateTime(post.scheduledFor)} ({formatRelative(post.scheduledFor)})
-            </span>
-          )}
-          {post.publishedAt && (
-            <span className="sf-post-card__date">
-              Publicado: {formatDateTime(post.publishedAt)}
-            </span>
-          )}
-          {post.failureReason && (
-            <span className="sf-post-card__failure">Motivo da falha: {post.failureReason}</span>
+          {post.medias?.length > 1 && (
+            <span className="sf-post-card__count">+{post.medias.length - 1}</span>
           )}
         </div>
-      </div>
 
-      <div className="sf-post-card__actions">
-        {canEdit && (
-          <Link className="sf-button sf-button--secondary" to={`/posts/${post.id}/edit`}>
-            Editar
-          </Link>
-        )}
-        {canArchive && (
-          <button
-            type="button"
-            className="sf-button sf-button--secondary"
-            onClick={handleArchive}
-            disabled={busy !== null}
-          >
-            {busy === 'archive' ? 'Arquivando...' : 'Arquivar'}
-          </button>
-        )}
-        {canDelete && (
-          <button
-            type="button"
-            className="sf-button sf-button--danger"
-            onClick={handleDelete}
-            disabled={busy !== null}
-          >
-            {busy === 'delete' ? 'Excluindo...' : 'Excluir'}
-          </button>
-        )}
-      </div>
-    </article>
+        <div className="sf-post-card__body">
+          <div className="sf-post-card__meta">
+            <span className="sf-post-card__type">{POST_TYPE_LABELS[post.type]}</span>
+            <StatusBadge status={post.status} />
+          </div>
+
+          {post.caption && (
+            <p className="sf-post-card__caption">
+              {post.caption.length > 140 ? `${post.caption.slice(0, 140)}...` : post.caption}
+            </p>
+          )}
+
+          <div className="sf-post-card__footer">
+            {post.instagramAccount && (
+              <span className="sf-post-card__account">@{post.instagramAccount.username}</span>
+            )}
+            {post.scheduledFor && (
+              <span className="sf-post-card__date">
+                Agendado: {formatDateTime(post.scheduledFor)} ({formatRelative(post.scheduledFor)})
+              </span>
+            )}
+            {post.publishedAt && (
+              <span className="sf-post-card__date">
+                Publicado: {formatDateTime(post.publishedAt)}
+              </span>
+            )}
+            {post.failureReason && (
+              <span className="sf-post-card__failure">Motivo da falha: {post.failureReason}</span>
+            )}
+          </div>
+        </div>
+
+        <div className="sf-post-card__actions">
+          {canShowInsights && (
+            <button
+              type="button"
+              className="sf-button sf-button--primary"
+              onClick={() => setShowInsights(true)}
+            >
+              Métricas
+            </button>
+          )}
+          {canEdit && (
+            <Link className="sf-button sf-button--secondary" to={`/posts/${post.id}/edit`}>
+              Editar
+            </Link>
+          )}
+          {canArchive && (
+            <button
+              type="button"
+              className="sf-button sf-button--secondary"
+              onClick={handleArchive}
+              disabled={busy !== null}
+            >
+              {busy === 'archive' ? 'Arquivando...' : 'Arquivar'}
+            </button>
+          )}
+          {canDelete && (
+            <button
+              type="button"
+              className="sf-button sf-button--danger"
+              onClick={handleDelete}
+              disabled={busy !== null}
+            >
+              {busy === 'delete' ? 'Excluindo...' : 'Excluir'}
+            </button>
+          )}
+        </div>
+      </article>
+
+      {showInsights && (
+        <PostInsightsModal
+          postId={post.id}
+          accountId={post.instagramAccount?.id}
+          onClose={() => setShowInsights(false)}
+        />
+      )}
+    </>
   );
 }
