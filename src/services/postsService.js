@@ -42,3 +42,30 @@ export function getPostInsights(id, { refresh = false } = {}) {
   const qs = refresh ? '?refresh=true' : '';
   return request(`/api/posts/${id}/insights${qs}`);
 }
+
+// --- Rodada 4: multi-profile batch posting ------------------------------
+
+// Body: { instagramAccountIds, type, items: [{ mediaIds, caption?, coverMediaAssetId? }],
+//         caption?, coverMediaAssetId?, scheduledFor?, stagger?, useSpintax? }
+// Returns { batch: { batchId, total, accounts, byStatus, firstScheduledFor, lastScheduledFor } }
+export function createPostBatch(body) {
+  return request('/api/posts/batch', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
+// Returns { batch, posts }
+export function getPostBatch(batchId) {
+  return request(`/api/posts/batch/${batchId}`);
+}
+
+// Returns { archived: { batchId, archived, skipped } }
+export function archivePostBatch(batchId) {
+  return request(`/api/posts/batch/${batchId}/archive`, { method: 'POST' });
+}
+
+// Returns { deleted: { batchId, deleted, skipped } }
+export function deletePostBatch(batchId) {
+  return request(`/api/posts/batch/${batchId}`, { method: 'DELETE' });
+}

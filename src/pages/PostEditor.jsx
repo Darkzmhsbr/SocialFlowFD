@@ -14,6 +14,9 @@ import { LoadingState } from '../components/states.jsx';
 import { POST_TYPE_RULES } from '../utils/postConstants.js';
 import * as postsService from '../services/postsService.js';
 import '../styles/posts.css';
+// Rodada 4: multi-profile batch mode (only when creating a post).
+import PublishModeToggle from '../components/PublishModeToggle.jsx';
+import BatchPostComposer from '../components/BatchPostComposer.jsx';
 
 // Single-screen composer for creating a new post or editing an existing one.
 // The URL param `:id` decides which mode: absent = create, present = edit.
@@ -38,6 +41,10 @@ export default function PostEditor() {
   // Rodada 2b: optional custom cover for FEED_VIDEO / REEL. Full media
   // object (id, url, type) or null. Backend accepts coverMediaAssetId.
   const [coverMedia, setCoverMedia] = useState(null);
+  // Rodada 4: 'single' = this composer (original behavior), 'batch' =
+  // BatchPostComposer (many media x many profiles). Edit mode is always
+  // single — posts of a batch are edited one by one.
+  const [publishMode, setPublishMode] = useState('single');
 
   // Load existing post when in edit mode.
   useEffect(() => {
@@ -185,6 +192,19 @@ export default function PostEditor() {
     );
   }
 
+  // Rodada 4: batch mode takes over the page while creating. All hooks are
+  // declared above, so this conditional return is safe.
+  if (!isEditing && publishMode === 'batch') {
+    return (
+      <div className="sf-page">
+        <Header />
+        <main className="sf-main">
+          <BatchPostComposer onSwitchToSingle={() => setPublishMode('single')} />
+        </main>
+      </div>
+    );
+  }
+
   const isCarousel = type === 'FEED_CAROUSEL';
   // Rodada 2b: decides whether the Cover section renders and shifts the
   // section numbering for Legenda/Agendamento (4/5 -> 5/6) so the user
@@ -216,6 +236,11 @@ export default function PostEditor() {
           }
         >
           <div className="sf-post-editor">
+            {/* Rodada 4: choose between one profile and many (create only) */}
+            {!isEditing && (
+              <PublishModeToggle value={publishMode} onChange={setPublishMode} disabled={saving} />
+            )}
+
             <section className="sf-post-editor__section">
               <h3 className="sf-post-editor__section-title">1. Conta de destino</h3>
               <AccountPicker

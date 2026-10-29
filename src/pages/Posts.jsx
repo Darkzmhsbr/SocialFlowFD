@@ -9,11 +9,22 @@ import { LoadingState, ErrorState, EmptyState } from '../components/states.jsx';
 import { usePosts } from '../hooks/usePosts.js';
 import { STATUS_TABS } from '../utils/postConstants.js';
 import '../styles/posts.css';
+// Rodada 4: batch strip + batch management modal.
+import BatchStrip from '../components/BatchStrip.jsx';
+import BatchActionsModal from '../components/BatchActionsModal.jsx';
+import '../styles/batch.css';
 
 export default function Posts() {
   const [activeTab, setActiveTab] = useState(STATUS_TABS[0]);
   const { status, posts, error, reload, archive, remove } = usePosts(activeTab.filter);
   const [toast, setToast] = useState(null);
+  // Rodada 4: batch currently open in the management modal (null = closed).
+  const [openBatchId, setOpenBatchId] = useState(null);
+
+  const handleBatchChanged = (message) => {
+    setToast({ tone: 'success', message });
+    reload();
+  };
 
   const handleArchive = async (id) => {
     try {
@@ -53,6 +64,11 @@ export default function Posts() {
         >
           <StatusTabs activeKey={activeTab.key} onChange={setActiveTab} />
 
+          {/* Rodada 4: one chip per batch in this tab, with "Gerenciar lote" */}
+          {status === 'success' && posts.length > 0 && (
+            <BatchStrip posts={posts} onManage={setOpenBatchId} />
+          )}
+
           {status === 'loading' && <LoadingState message="Carregando posts..." />}
           {status === 'error' && <ErrorState message={error} onRetry={reload} />}
           {status === 'success' && posts.length === 0 && (
@@ -72,6 +88,15 @@ export default function Posts() {
           )}
         </DashboardCard>
       </main>
+
+      {/* Rodada 4: batch management modal */}
+      {openBatchId && (
+        <BatchActionsModal
+          batchId={openBatchId}
+          onClose={() => setOpenBatchId(null)}
+          onChanged={handleBatchChanged}
+        />
+      )}
 
       <Toast message={toast?.message} tone={toast?.tone} onClose={() => setToast(null)} />
     </div>

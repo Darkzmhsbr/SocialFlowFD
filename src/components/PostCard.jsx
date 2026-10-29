@@ -4,6 +4,8 @@ import StatusBadge from './StatusBadge.jsx';
 import PostInsightsModal from './PostInsightsModal.jsx';
 import { POST_TYPE_LABELS } from '../utils/postConstants.js';
 import { formatDateTime, formatRelative } from '../utils/formatDate.js';
+// Rodada 4: styles for the "Lote" badge.
+import '../styles/batch.css';
 
 // Editable states can be opened in the composer. Everything else is view-only
 // for now (a "view" screen is Phase 2.4 material).
@@ -104,6 +106,12 @@ export default function PostCard({ post, onArchive, onDelete }) {
           <div className="sf-post-card__meta">
             <span className="sf-post-card__type">{POST_TYPE_LABELS[post.type]}</span>
             <StatusBadge status={post.status} />
+            {/* Rodada 4: post created by the multi-profile batch composer */}
+            {post.batchId && (
+              <span className="sf-post-card__batch" title="Criado em lote para vários perfis">
+                Lote
+              </span>
+            )}
           </div>
 
           {post.caption && (

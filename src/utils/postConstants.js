@@ -56,3 +56,24 @@ export const STATUS_TABS = [
   { key: 'FAILED',    label: 'Falhou',    filter: 'FAILED' },
   { key: 'ARCHIVED',  label: 'Arquivados', filter: 'ARCHIVED' },
 ];
+
+// Rodada 4 - multi-profile batch composer. Mirrors env.batch on the backend
+// (BATCH_MAX_ITEMS / BATCH_MAX_ACCOUNTS / BATCH_MAX_POSTS). The backend is
+// the source of truth; these only drive the composer's warnings.
+export const BATCH_LIMITS = {
+  maxItems: 20,
+  maxAccounts: 30,
+  maxPosts: 300,
+};
+
+// Stagger options (minutes) offered in the batch composer.
+export const STAGGER_WINDOW_OPTIONS = [0, 10, 15, 30, 60, 120];
+export const STAGGER_INTERVAL_OPTIONS = [0, 15, 30, 60, 120, 240];
+
+// Default stagger = backend defaults (BATCH_DEFAULT_WINDOW_MINUTES /
+// BATCH_DEFAULT_ITEM_INTERVAL_MINUTES).
+export const STAGGER_DEFAULTS = {
+  enabled: true,
+  windowMinutes: 30,
+  itemIntervalMinutes: 30,
+};
