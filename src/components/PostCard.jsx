@@ -6,6 +6,11 @@ import { POST_TYPE_LABELS } from '../utils/postConstants.js';
 import { formatDateTime, formatRelative } from '../utils/formatDate.js';
 // Rodada 4: styles for the "Lote" badge.
 import '../styles/batch.css';
+// Rodada 5: "Publicar agora" + pause/problem hints.
+import '../styles/notifications.css';
+
+// Rodada 5: statuses the backend accepts for "Publicar agora".
+const PUBLISH_NOW = new Set(['DRAFT', 'SCHEDULED', 'FAILED']);
 
 // Editable states can be opened in the composer. Everything else is view-only
 // for now (a "view" screen is Phase 2.4 material).
@@ -43,8 +48,8 @@ function buildDeleteConfirmMessage(status) {
   return 'Excluir este rascunho? Essa ação não pode ser desfeita.';
 }
 
-export default function PostCard({ post, onArchive, onDelete }) {
-  const [busy, setBusy] = useState(null); // 'archive' | 'delete' | null
+export default function PostCard({ post, onArchive, onDelete, onPublishNow }) {
+  const [busy, setBusy] = useState(null); // 'archive' | 'delete' | 'publish' | null
   const [showInsights, setShowInsights] = useState(false);
 
   // Rodada 2b: when a custom cover was picked (only possible for FEED_VIDEO
@@ -62,6 +67,29 @@ export default function PostCard({ post, onArchive, onDelete }) {
   // instagramMediaId (the id Meta returns after /media_publish — needed
   // to call /{media-id}/insights).
   const canShowInsights = post.status === 'PUBLISHED' && Boolean(post.instagramMediaId);
+
+  // Rodada 5: account state shown on the card + "Publicar agora".
+  const account = post.instagramAccount;
+  const accountDown = Boolean(account?.status && account.status !== 'ACTIVE');
+  const accountPausedUntil =
+    account?.publishPausedUntil && new Date(account.publishPausedUntil).getTime() > Date.now()
+      ? account.publishPausedUntil
+      : null;
+  const canPublishNow = Boolean(onPublishNow) && PUBLISH_NOW.has(post.status) && !accountDown;
+
+  const handlePublishNow = async () => {
+    const msg =
+      post.status === 'FAILED'
+        ? 'Tentar publicar este post agora?'
+        : 'Publicar este post agora, sem esperar o horário agendado?';
+    if (!window.confirm(msg)) return;
+    setBusy('publish');
+    try {
+      await onPublishNow(post.id);
+    } finally {
+      setBusy(null);
+    }
+  };
 
   const handleArchive = async () => {
     if (!window.confirm('Arquivar este post?')) return;
@@ -137,10 +165,33 @@ export default function PostCard({ post, onArchive, onDelete }) {
             {post.failureReason && (
               <span className="sf-post-card__failure">Motivo da falha: {post.failureReason}</span>
             )}
+            {/* Rodada 5: why a pending post is waiting */}
+            {accountDown && PUBLISH_NOW.has(post.status) && (
+              <span className="sf-post-card__hint sf-post-card__hint--error">
+                ⚠ Perfil com problema — post aguardando reconexão no Dashboard.
+              </span>
+            )}
+            {!accountDown && accountPausedUntil && post.status === 'SCHEDULED' && (
+              <span className="sf-post-card__hint">
+                ⏸ Perfil em pausa até {formatDateTime(accountPausedUntil)}
+                {account.pauseReason ? ` (${account.pauseReason})` : ''}.
+              </span>
+            )}
           </div>
         </div>
 
         <div className="sf-post-card__actions">
+          {/* Rodada 5 */}
+          {canPublishNow && (
+            <button
+              type="button"
+              className="sf-button sf-button--primary"
+              onClick={handlePublishNow}
+              disabled={busy !== null}
+            >
+              {busy === 'publish' ? 'Enviando...' : post.status === 'FAILED' ? 'Tentar agora' : 'Publicar agora'}
+            </button>
+          )}
           {canShowInsights && (
             <button
               type="button"

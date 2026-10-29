@@ -1,0 +1,239 @@
+/* Rodada 5 — header bell, account health banner, publish-now hints. */
+
+/* header slot that groups bell + user menu (keeps space-between layout) */
+.sf-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sf-bell {
+  position: relative;
+}
+
+.sf-bell__button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--sf-radius-sm, 8px);
+  border: 1px solid var(--sf-border, rgba(127, 127, 127, 0.3));
+  background: transparent;
+  color: var(--sf-text-secondary, inherit);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.sf-bell__button:hover {
+  color: var(--sf-text-primary, inherit);
+  border-color: var(--sf-text-muted, rgba(127, 127, 127, 0.6));
+}
+
+.sf-bell__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #e5484d;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.sf-bell__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 1100;
+  width: 360px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  border: 1px solid var(--sf-border, rgba(127, 127, 127, 0.3));
+  background: var(--sf-surface, #15171e);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.sf-bell__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--sf-border, rgba(127, 127, 127, 0.3));
+}
+
+.sf-bell__mark-all {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: var(--sf-accent, #7c5cff);
+  cursor: pointer;
+}
+
+.sf-bell__mark-all:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.sf-bell__empty {
+  margin: 0;
+  padding: 18px 14px;
+  font-size: 13px;
+  color: var(--sf-text-muted, inherit);
+}
+
+.sf-bell__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.sf-bell__item {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-bottom: 1px solid var(--sf-border, rgba(127, 127, 127, 0.2));
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: default;
+}
+
+.sf-bell__item.is-unread {
+  background: var(--sf-surface-raised, rgba(127, 127, 127, 0.08));
+  cursor: pointer;
+}
+
+.sf-bell__dot {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--sf-text-muted, #888);
+}
+
+.sf-bell__item--error .sf-bell__dot { background: #e5484d; }
+.sf-bell__item--warning .sf-bell__dot { background: #d4a017; }
+.sf-bell__item--success .sf-bell__dot { background: #30a46c; }
+.sf-bell__item--info .sf-bell__dot { background: var(--sf-accent, #7c5cff); }
+
+.sf-bell__item:not(.is-unread) .sf-bell__dot {
+  opacity: 0.35;
+}
+
+.sf-bell__content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.sf-bell__title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sf-bell__message {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--sf-text-secondary, inherit);
+}
+
+.sf-bell__time {
+  font-size: 11px;
+  color: var(--sf-text-muted, inherit);
+}
+
+@media (max-width: 640px) {
+  .sf-bell__panel {
+    position: fixed;
+    top: 64px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+}
+
+/* ---------- account health banner (Dashboard) ---------- */
+.sf-health {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.sf-health__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid;
+}
+
+.sf-health__row--error {
+  border-color: rgba(229, 72, 77, 0.55);
+  background: rgba(229, 72, 77, 0.1);
+}
+
+.sf-health__row--warning {
+  border-color: rgba(212, 160, 23, 0.55);
+  background: rgba(212, 160, 23, 0.1);
+}
+
+.sf-health__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 220px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ---------- PostCard hints ---------- */
+.sf-post-card__hint {
+  font-size: 12.5px;
+  color: #d4a017;
+}
+
+.sf-post-card__hint--error {
+  color: #e5484d;
+}
+
+/* ---------- AccountMultiSelect paused note ---------- */
+.sf-account-multi__paused {
+  color: #d4a017;
+  opacity: 1;
+}
+
+/* ---------- BatchActionsModal publish-now ---------- */
+.sf-batch-modal__publish-now {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-right: auto;
+}
+
+.sf-batch-modal__publish-now .sf-select {
+  width: auto;
+}

@@ -13,6 +13,8 @@ import { useInstagramAccounts } from '../hooks/useInstagramAccounts.js';
 import { useDashboardStats } from '../hooks/useDashboardStats.js';
 import { readAndClearParam } from '../utils/queryParams.js';
 import '../styles/dashboard.css';
+// Rodada 5: alert for profiles that are down or paused.
+import AccountHealthBanner from '../components/AccountHealthBanner.jsx';
 
 const CALLBACK_MESSAGES = {
   connected: { tone: 'success', message: '✓ Instagram conectado com sucesso.' },
@@ -146,6 +148,11 @@ export default function Dashboard() {
 
           {accountsStatus === 'success' && accounts.length === 0 && (
             <EmptyState message="Nenhuma conta conectada" />
+          )}
+
+          {/* Rodada 5: profiles with problems / paused by Meta limits */}
+          {accountsStatus === 'success' && accounts.length > 0 && (
+            <AccountHealthBanner accounts={accounts} />
           )}
 
           {accountsStatus === 'success' && accounts.length > 0 && (

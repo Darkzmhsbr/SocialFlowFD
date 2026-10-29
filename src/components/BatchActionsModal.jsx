@@ -12,7 +12,9 @@ import * as postsService from '../services/postsService.js';
 // PUBLISHING) — the backend enforces it and reports how many were skipped.
 export default function BatchActionsModal({ batchId, onClose, onChanged }) {
   const [state, setState] = useState({ status: 'loading', batch: null, posts: [], error: null });
-  const [busy, setBusy] = useState(null); // 'archive' | 'delete' | null
+  const [busy, setBusy] = useState(null); // 'archive' | 'delete' | 'publish' | null
+  // Rodada 5: spacing between posts of the same profile for "publicar agora".
+  const [nowInterval, setNowInterval] = useState(30);
 
   const load = useCallback(async () => {
     setState((s) => ({ ...s, status: 'loading', error: null }));
@@ -43,6 +45,29 @@ export default function BatchActionsModal({ batchId, onClose, onChanged }) {
       const { archived } = await postsService.archivePostBatch(batchId);
       onChanged(
         `✓ ${archived.archived} post(s) arquivado(s)${archived.skipped ? ` · ${archived.skipped} ignorado(s)` : ''}.`
+      );
+      onClose();
+    } catch (err) {
+      setState((s) => ({ ...s, error: err.message }));
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  // Rodada 5: publish every pending post of the batch now, re-staggered.
+  const handlePublishNow = async () => {
+    const intervalText = nowInterval === 0 ? 'sem intervalo extra' : `com ${nowInterval} min entre posts do mesmo perfil`;
+    if (!window.confirm(`Publicar agora todos os posts pendentes deste lote (${intervalText})?`)) return;
+    setBusy('publish');
+    try {
+      const { requeued } = await postsService.publishPostBatchNow(batchId, {
+        intervalMinutes: nowInterval,
+        windowMinutes: 10,
+      });
+      onChanged(
+        `✓ ${requeued.requeued} post(s) na fila a partir de agora` +
+          (requeued.skippedInactive ? ` · ${requeued.skippedInactive} de perfil com problema mantido(s)` : '') +
+          '.'
       );
       onClose();
     } catch (err) {
@@ -144,6 +169,31 @@ export default function BatchActionsModal({ batchId, onClose, onChanged }) {
             </ul>
 
             <div className="sf-batch-modal__actions">
+              {/* Rodada 5: publish pending posts now */}
+              {(batch.byStatus.SCHEDULED || 0) + (batch.byStatus.FAILED || 0) + (batch.byStatus.DRAFT || 0) > 0 && (
+                <div className="sf-batch-modal__publish-now">
+                  <select
+                    className="sf-select"
+                    value={nowInterval}
+                    onChange={(e) => setNowInterval(Number(e.target.value))}
+                    disabled={busy !== null}
+                    aria-label="Intervalo entre posts do mesmo perfil"
+                  >
+                    <option value={0}>Sem intervalo extra</option>
+                    <option value={15}>15 min entre posts</option>
+                    <option value={30}>30 min entre posts</option>
+                    <option value={60}>1 hora entre posts</option>
+                  </select>
+                  <button
+                    type="button"
+                    className="sf-button sf-button--primary"
+                    onClick={handlePublishNow}
+                    disabled={busy !== null}
+                  >
+                    {busy === 'publish' ? 'Enviando...' : 'Publicar pendentes agora'}
+                  </button>
+                </div>
+              )}
               <button
                 type="button"
                 className="sf-button sf-button--secondary"

@@ -25,7 +25,7 @@ export default function Posts() {
   const [accountFilter, setAccountFilter] = useState(null);
   const [page, setPage] = useState(0);
   // Rodada 4.1: was usePosts(activeTab.filter) — first 50 posts only.
-  const { status, posts, total, error, reload, archive, remove } = usePostsPage(activeTab.filter, {
+  const { status, posts, total, error, reload, archive, remove, publishNow } = usePostsPage(activeTab.filter, {
     accountId: accountFilter,
     page,
     pageSize: POSTS_PAGE_SIZE,
@@ -56,6 +56,16 @@ export default function Posts() {
     try {
       await archive(id);
       setToast({ tone: 'success', message: '✓ Post arquivado.' });
+    } catch (err) {
+      setToast({ tone: 'error', message: err.message });
+    }
+  };
+
+  // Rodada 5: "Publicar agora"
+  const handlePublishNow = async (id) => {
+    try {
+      const notice = await publishNow(id);
+      setToast({ tone: 'success', message: `✓ ${notice || 'Post na fila de publicação.'}` });
     } catch (err) {
       setToast({ tone: 'error', message: err.message });
     }
@@ -113,6 +123,7 @@ export default function Posts() {
                   post={post}
                   onArchive={handleArchive}
                   onDelete={handleDelete}
+                  onPublishNow={handlePublishNow}
                 />
               ))}
             </div>

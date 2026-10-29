@@ -85,3 +85,19 @@ export function listPostsPage({ status, accountId, take = 50, skip = 0 } = {}) {
 export function getBatchLimits() {
   return request('/api/posts/batch/limits');
 }
+
+// --- Rodada 5: "Publicar agora" -----------------------------------------
+
+// Returns { post, notice }
+export function publishPostNow(id) {
+  return request(`/api/posts/${id}/publish-now`, { method: 'POST' });
+}
+
+// Body: { intervalMinutes?, windowMinutes? }
+// Returns { requeued: { batchId, requeued, skippedInactive, firstAt, lastAt } }
+export function publishPostBatchNow(batchId, body = {}) {
+  return request(`/api/posts/batch/${batchId}/publish-now`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}

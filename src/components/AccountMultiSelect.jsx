@@ -106,6 +106,16 @@ export default function AccountMultiSelect({
                 <span className="sf-account-multi__names">
                   <span className="sf-account-multi__username">@{account.username}</span>
                   {account.name && <span className="sf-account-multi__name">{account.name}</span>}
+                  {/* Rodada 5: paused by a Meta limit — posts wait and resume alone */}
+                  {account.publishPausedUntil && new Date(account.publishPausedUntil).getTime() > Date.now() && (
+                    <span className="sf-account-multi__name sf-account-multi__paused">
+                      Em pausa até{' '}
+                      {new Date(account.publishPausedUntil).toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  )}
                 </span>
               </label>
             </li>

@@ -59,5 +59,15 @@ export function usePostsPage(statusFilter = null, { accountId = null, page = 0, 
     [load]
   );
 
-  return { status, posts, total, error, reload: load, archive, remove };
+  // Rodada 5: "Publicar agora" — returns the backend notice for the toast.
+  const publishNow = useCallback(
+    async (id) => {
+      const res = await postsService.publishPostNow(id);
+      await load();
+      return res?.notice || null;
+    },
+    [load]
+  );
+
+  return { status, posts, total, error, reload: load, archive, remove, publishNow };
 }

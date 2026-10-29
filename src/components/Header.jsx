@@ -4,6 +4,9 @@ import '../styles/header.css';
 // Ajuste: links do menu só para usuário logado.
 import { useLocation } from 'react-router-dom';
 import { getToken } from '../services/api.js';
+// Rodada 5: notifications bell (only for logged-in users).
+import NotificationBell from './NotificationBell.jsx';
+import '../styles/notifications.css';
 
 // Public pages where the Dashboard/Posts links must NOT appear (the user
 // isn't logged in there, and clicking them would just bounce to /login).
@@ -47,7 +50,11 @@ export default function Header() {
         </nav>
         )}
 
+        {/* Rodada 5: bell + user menu grouped on the right */}
+        <div className="sf-header__actions">
+        {showNav && <NotificationBell />}
         <UserMenu />
+        </div>
       </div>
     </header>
   );
