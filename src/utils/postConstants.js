@@ -60,10 +60,12 @@ export const STATUS_TABS = [
 // Rodada 4 - multi-profile batch composer. Mirrors env.batch on the backend
 // (BATCH_MAX_ITEMS / BATCH_MAX_ACCOUNTS / BATCH_MAX_POSTS). The backend is
 // the source of truth; these only drive the composer's warnings.
+// Rodada 4.1: now only a FALLBACK — useBatchLimits() loads the real values
+// from GET /api/posts/batch/limits. Values raised (were 20 / 30 / 300).
 export const BATCH_LIMITS = {
-  maxItems: 20,
-  maxAccounts: 30,
-  maxPosts: 300,
+  maxItems: 50,
+  maxAccounts: 50,
+  maxPosts: 2500,
 };
 
 // Stagger options (minutes) offered in the batch composer.
@@ -77,3 +79,6 @@ export const STAGGER_DEFAULTS = {
   windowMinutes: 30,
   itemIntervalMinutes: 30,
 };
+
+// Rodada 4.1 - posts per page on the /posts list (backend caps take at 100).
+export const POSTS_PAGE_SIZE = 50;

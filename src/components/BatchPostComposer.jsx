@@ -15,6 +15,8 @@ import BatchItemList from './BatchItemList.jsx';
 import BatchScheduleOptions from './BatchScheduleOptions.jsx';
 import { POST_TYPE_RULES, BATCH_LIMITS, STAGGER_DEFAULTS } from '../utils/postConstants.js';
 import * as postsService from '../services/postsService.js';
+// Rodada 4.1: live limits from the backend (BATCH_LIMITS is the fallback).
+import { useBatchLimits } from '../hooks/useBatchLimits.js';
 import '../styles/posts.css';
 import '../styles/batch.css';
 
@@ -25,7 +27,7 @@ import '../styles/batch.css';
 // 3 Reels x 10 profiles = 30 independent posts sharing a batchId.
 //
 //   - Single-media types (Reel, video, photo, story): many files at once,
-//     up to BATCH_LIMITS.maxItems, each one its own item.
+//     up to limits.maxItems, each one its own item.
 //   - Carousel: all media form ONE item (one carousel per profile), using
 //     the same MediaGrid/MediaUploader as the single composer.
 //
@@ -46,6 +48,8 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
   const [caption, setCaption] = useState(''); // shared caption
   const [scheduledFor, setScheduledFor] = useState(null);
   const [stagger, setStagger] = useState(STAGGER_DEFAULTS);
+  // Rodada 4.1: replaces the direct BATCH_LIMITS reads below.
+  const limits = useBatchLimits();
 
   const rules = POST_TYPE_RULES[type];
   const isCarousel = type === 'FEED_CAROUSEL';
@@ -116,8 +120,8 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
       }
     } else {
       if (items.length === 0) return 'Adicione pelo menos uma mídia.';
-      if (items.length > BATCH_LIMITS.maxItems) {
-        return `Máximo de ${BATCH_LIMITS.maxItems} mídias por lote. Você tem ${items.length}.`;
+      if (items.length > limits.maxItems) {
+        return `Máximo de ${limits.maxItems} mídias por lote. Você tem ${items.length}.`;
       }
       for (let i = 0; i < items.length; i++) {
         const it = items[i];
@@ -133,8 +137,8 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
       }
     }
 
-    if (totalPosts > BATCH_LIMITS.maxPosts) {
-      return `Este lote geraria ${totalPosts} posts (máximo ${BATCH_LIMITS.maxPosts}). Reduza mídias ou perfis.`;
+    if (totalPosts > limits.maxPosts) {
+      return `Este lote geraria ${totalPosts} posts (máximo ${limits.maxPosts}). Reduza mídias ou perfis.`;
     }
     if (cover && !allowsCover) return `Posts do tipo ${type} não aceitam capa customizada.`;
     if (cover && cover.type !== 'IMAGE') return 'A capa precisa ser uma imagem.';
@@ -224,7 +228,12 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
 
           <section className="sf-post-editor__section">
             <h3 className="sf-post-editor__section-title">1. Perfis de destino</h3>
-            <AccountMultiSelect value={accountIds} onChange={setAccountIds} disabled={saving} />
+            <AccountMultiSelect
+              value={accountIds}
+              onChange={setAccountIds}
+              disabled={saving}
+              maxAccounts={limits.maxAccounts}
+            />
           </section>
 
           <section className="sf-post-editor__section">
@@ -257,7 +266,7 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
                 <BatchMediaUploader
                   postType={type}
                   currentCount={items.length}
-                  max={BATCH_LIMITS.maxItems}
+                  max={limits.maxItems}
                   onUploaded={handleItemUploaded}
                   onError={(msg) => setToast({ tone: 'error', message: msg })}
                   disabled={saving}
@@ -297,12 +306,12 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
             />
           </section>
 
-          <div className={`sf-batch-summary${totalPosts > BATCH_LIMITS.maxPosts ? ' is-over' : ''}`}>
+          <div className={`sf-batch-summary${totalPosts > limits.maxPosts ? ' is-over' : ''}`}>
             <strong>
               {itemCount} mídia{itemCount === 1 ? '' : 's'} × {accountIds.length} perfi
               {accountIds.length === 1 ? 'l' : 's'} = {totalPosts} post{totalPosts === 1 ? '' : 's'}
             </strong>
-            {totalPosts > BATCH_LIMITS.maxPosts && <span> (máximo {BATCH_LIMITS.maxPosts})</span>}
+            {totalPosts > limits.maxPosts && <span> (máximo {limits.maxPosts})</span>}
           </div>
 
           <div className="sf-post-editor__submit">

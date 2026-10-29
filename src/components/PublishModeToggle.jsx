@@ -24,7 +24,7 @@ export default function PublishModeToggle({ value, onChange, disabled = false })
         disabled={disabled}
       >
         <strong>Vários perfis</strong>
-        <span>Até 20 mídias publicadas em vários perfis de uma vez</span>
+        <span>Várias mídias publicadas em vários perfis de uma vez</span>
       </button>
     </div>
   );

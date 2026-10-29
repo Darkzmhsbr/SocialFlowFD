@@ -5,7 +5,14 @@ import { BATCH_LIMITS } from '../utils/postConstants.js';
 // composer. Same data source and ACTIVE-only rule as AccountPicker —
 // inactive accounts are listed but disabled, so the user sees why a
 // profile can't be picked instead of it silently disappearing.
-export default function AccountMultiSelect({ value = [], onChange, disabled = false }) {
+// Rodada 4.1: maxAccounts comes from the backend limits (BatchPostComposer);
+// the constant is only the fallback.
+export default function AccountMultiSelect({
+  value = [],
+  onChange,
+  disabled = false,
+  maxAccounts = BATCH_LIMITS.maxAccounts,
+}) {
   const { status, accounts, error } = useInstagramAccounts();
 
   if (status === 'loading') {
@@ -30,7 +37,7 @@ export default function AccountMultiSelect({ value = [], onChange, disabled = fa
   const activeIds = new Set(activeAccounts.map((a) => a.id));
   // Ignore ids of accounts that stopped being ACTIVE since they were picked.
   const selected = new Set(value.filter((id) => activeIds.has(id)));
-  const atLimit = selected.size >= BATCH_LIMITS.maxAccounts;
+  const atLimit = selected.size >= maxAccounts;
   const allSelected = activeAccounts.every((a) => selected.has(a.id));
 
   const toggle = (id) => {
@@ -45,7 +52,7 @@ export default function AccountMultiSelect({ value = [], onChange, disabled = fa
   };
 
   const selectAll = () => {
-    onChange(activeAccounts.slice(0, BATCH_LIMITS.maxAccounts).map((a) => a.id));
+    onChange(activeAccounts.slice(0, maxAccounts).map((a) => a.id));
   };
 
   const clearAll = () => onChange([]);
@@ -120,7 +127,7 @@ export default function AccountMultiSelect({ value = [], onChange, disabled = fa
       </ul>
 
       {atLimit && (
-        <p className="sf-field-hint">Limite de {BATCH_LIMITS.maxAccounts} perfis por lote atingido.</p>
+        <p className="sf-field-hint">Limite de {maxAccounts} perfis por lote atingido.</p>
       )}
     </div>
   );

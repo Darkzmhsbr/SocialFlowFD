@@ -21,7 +21,7 @@ export default function BatchStrip({ posts, onManage }) {
         <div key={group.batchId} className="sf-batch-strip__chip">
           <span className="sf-post-card__batch">Lote</span>
           <span className="sf-batch-strip__text">
-            {POST_TYPE_LABELS[group.type] || group.type} · {group.count} post{group.count === 1 ? '' : 's'} nesta aba
+            {POST_TYPE_LABELS[group.type] || group.type} · {group.count} post{group.count === 1 ? '' : 's'} nesta página
             · {group.accounts.size} perfi{group.accounts.size === 1 ? 'l' : 's'}
           </span>
           <button

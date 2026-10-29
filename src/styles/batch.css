@@ -495,3 +495,41 @@
     padding: 14px;
   }
 }
+
+/* ---------- Rodada 4.1: posts page filter + pagination ---------- */
+.sf-posts-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 12px 0 0;
+}
+
+.sf-posts-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
+}
+
+.sf-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 16px 0 4px;
+}
+
+.sf-pagination__info {
+  font-size: 0.88rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 560px) {
+  .sf-posts-filter {
+    min-width: 0;
+    width: 100%;
+  }
+}

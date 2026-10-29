@@ -69,3 +69,19 @@ export function archivePostBatch(batchId) {
 export function deletePostBatch(batchId) {
   return request(`/api/posts/batch/${batchId}`, { method: 'DELETE' });
 }
+
+// --- Rodada 4.1: pagination + batch limits -------------------------------
+
+// GET /api/posts?status=&accountId=&take=&skip=
+// Returns { posts, total, take, skip }
+export function listPostsPage({ status, accountId, take = 50, skip = 0 } = {}) {
+  const params = new URLSearchParams({ take: String(take), skip: String(skip) });
+  if (status) params.set('status', status);
+  if (accountId) params.set('accountId', accountId);
+  return request(`/api/posts?${params.toString()}`);
+}
+
+// Returns { limits: { maxItems, maxAccounts, maxPosts, defaultWindowMinutes, defaultItemIntervalMinutes } }
+export function getBatchLimits() {
+  return request('/api/posts/batch/limits');
+}
