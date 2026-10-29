@@ -1,6 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import UserMenu from './UserMenu.jsx';
 import '../styles/header.css';
+// Ajuste: links do menu só para usuário logado.
+import { useLocation } from 'react-router-dom';
+import { getToken } from '../services/api.js';
+
+// Public pages where the Dashboard/Posts links must NOT appear (the user
+// isn't logged in there, and clicking them would just bounce to /login).
+const PUBLIC_PATHS = ['/login', '/register'];
 
 // Nav lives in the header so every page picks up the same shell without
 // duplicating the brand block. NavLink attaches an `active` class when the
@@ -11,6 +18,11 @@ const NAV_ITEMS = [
 ];
 
 export default function Header() {
+  // Each page renders its own <Header />, so after login/logout the next
+  // page mounts a fresh header and re-reads the stored token.
+  const { pathname } = useLocation();
+  const showNav = !PUBLIC_PATHS.includes(pathname) && Boolean(getToken());
+
   return (
     <header className="sf-header">
       <div className="sf-header__inner">
@@ -19,6 +31,7 @@ export default function Header() {
           <span className="sf-header__name">SocialFlow</span>
         </div>
 
+        {showNav && (
         <nav className="sf-header__nav" aria-label="Navegação principal">
           {NAV_ITEMS.map((item) => (
             <NavLink
@@ -32,6 +45,7 @@ export default function Header() {
             </NavLink>
           ))}
         </nav>
+        )}
 
         <UserMenu />
       </div>
