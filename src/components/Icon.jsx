@@ -20,6 +20,8 @@ const PATHS = {
   mail: 'M4 6h16v12H4zM4 7l8 6 8-6',
   // Rodada 12
   broom: 'M14 4l6 6M17 7l-6 6M11 13l-7 7M9 11l4 4M6 14l4 4',
+  // Rodada 15
+  month: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M8 14h2M14 14h2M8 17h2M14 17h2',
 };
 
 export default function Icon({ name, size = 20, className = '' }) {

@@ -128,6 +128,43 @@ export function getPostsOverview(filters = {}) {
   return request(`/api/posts/overview?${buildFilterParams(filters).toString()}`);
 }
 
+// --- Rodada 15: Calendário ------------------------------------------------
+
+// Adds the calendar range (local days) to the usual filters.
+// filters: { from: 'AAAA-MM-DD', to: 'AAAA-MM-DD', statuses?: string[], folderId, accountId, types, q }
+function buildCalendarParams({ from, to, statuses, ...filters } = {}) {
+  const params = buildFilterParams(filters);
+  params.set('from', from);
+  params.set('to', to);
+  params.set('tzOffset', String(new Date().getTimezoneOffset()));
+  if (Array.isArray(statuses) && statuses.length > 0) params.set('statuses', statuses.join(','));
+  return params;
+}
+
+// Returns { calendar: { days: [{ date, total, accounts, byType, byStatus }], totals, truncated } }
+export function getCalendar(filters) {
+  return request(`/api/posts/calendar?${buildCalendarParams(filters).toString()}`);
+}
+
+// Posts of a date range (usually one day), in time order. Returns { posts, total, take, skip }
+export function queryCalendarPosts({ take = 50, skip = 0, ...filters } = {}) {
+  const params = buildCalendarParams(filters);
+  params.set('take', String(take));
+  params.set('skip', String(skip));
+  return request(`/api/posts/query?${params.toString()}`);
+}
+
+// Moves the scheduled/failed posts of a filter N days, keeping the time.
+// Returns { result: { matched, affected, skipped, inPast } }
+export function shiftPostsDays({ days, ...filter }) {
+  const { from, to, statuses, folderId, accountId, types, q } = filter;
+  return bulkPosts({
+    action: 'shift-days',
+    days,
+    filter: { from, to, tzOffset: new Date().getTimezoneOffset(), statuses, folderId, accountId, types, q },
+  });
+}
+
 // Body: { action: 'delete'|'archive'|'publish-now', ids?, filter?, intervalMinutes?, windowMinutes? }
 // Returns { result: { action, matched, affected, skipped } }
 export function bulkPosts(body) {
