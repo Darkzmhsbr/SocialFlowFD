@@ -101,3 +101,33 @@ export function publishPostBatchNow(batchId, body = {}) {
     body: JSON.stringify(body),
   });
 }
+
+// --- Rodada 6: Agendamentos page -----------------------------------------
+
+function buildFilterParams({ status, types, accountId, q } = {}) {
+  const params = new URLSearchParams();
+  if (status) params.set('status', status);
+  if (Array.isArray(types) && types.length > 0) params.set('types', types.join(','));
+  if (accountId) params.set('accountId', accountId);
+  if (q) params.set('q', q);
+  return params;
+}
+
+// Returns { posts, total, take, skip }
+export function queryPosts({ take = 50, skip = 0, ...filters } = {}) {
+  const params = buildFilterParams(filters);
+  params.set('take', String(take));
+  params.set('skip', String(skip));
+  return request(`/api/posts/query?${params.toString()}`);
+}
+
+// Returns { byStatus, byType, nextScheduled }
+export function getPostsOverview(filters = {}) {
+  return request(`/api/posts/overview?${buildFilterParams(filters).toString()}`);
+}
+
+// Body: { action: 'delete'|'archive'|'publish-now', ids?, filter?, intervalMinutes?, windowMinutes? }
+// Returns { result: { action, matched, affected, skipped } }
+export function bulkPosts(body) {
+  return request('/api/posts/bulk', { method: 'POST', body: JSON.stringify(body) });
+}

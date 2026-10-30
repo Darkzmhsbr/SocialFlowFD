@@ -15,6 +15,10 @@ import { readAndClearParam } from '../utils/queryParams.js';
 import '../styles/dashboard.css';
 // Rodada 5: alert for profiles that are down or paused.
 import AccountHealthBanner from '../components/AccountHealthBanner.jsx';
+// Rodada 6: the full accounts list moved to /accounts — the Dashboard keeps
+// a summary. Set SHOW_FULL_ACCOUNT_LIST to true to bring the old list back.
+import AccountsSummaryCard from '../components/AccountsSummaryCard.jsx';
+const SHOW_FULL_ACCOUNT_LIST = false;
 
 const CALLBACK_MESSAGES = {
   connected: { tone: 'success', message: '✓ Instagram conectado com sucesso.' },
@@ -128,7 +132,18 @@ export default function Dashboard() {
           </>
         )}
 
+        {/* Rodada 6: accounts summary (full list in /accounts) */}
+        {!SHOW_FULL_ACCOUNT_LIST && (
+          <AccountsSummaryCard
+            status={accountsStatus}
+            accounts={accounts}
+            error={accountsError}
+            onRetry={reloadAccounts}
+          />
+        )}
+
         {/* Instagram accounts (existing card) */}
+        {SHOW_FULL_ACCOUNT_LIST && (
         <DashboardCard
           title="Instagram"
           subtitle={
@@ -170,6 +185,7 @@ export default function Dashboard() {
             </div>
           )}
         </DashboardCard>
+        )}
       </main>
 
       <Toast message={toast?.message} tone={toast?.tone} onClose={() => setToast(null)} />

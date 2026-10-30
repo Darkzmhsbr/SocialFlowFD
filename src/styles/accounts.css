@@ -1,0 +1,255 @@
+/* Rodada 6 — Contas page, Dashboard summary and shared page pieces
+ * (page head, search, chips, stat tiles) reused by Agendamentos. */
+
+.sf-page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.sf-page-head__title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sf-page-head__subtitle {
+  margin-top: 4px;
+  color: var(--sf-text-secondary);
+}
+
+.sf-page-head__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* search */
+.sf-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+  padding: 0 12px;
+  height: 42px;
+  border-radius: var(--sf-radius-sm);
+  border: 1px solid var(--sf-border);
+  background: var(--sf-surface);
+  color: var(--sf-text-muted);
+}
+
+.sf-search:focus-within {
+  border-color: var(--sf-accent);
+}
+
+.sf-search__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--sf-text-primary);
+  font: inherit;
+  font-size: 14px;
+}
+
+/* chips */
+.sf-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sf-chips--scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+
+.sf-chip {
+  flex: 0 0 auto;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--sf-border);
+  background: transparent;
+  color: var(--sf-text-secondary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.sf-chip:hover {
+  color: var(--sf-text-primary);
+}
+
+.sf-chip.is-active {
+  color: var(--sf-text-primary);
+  border-color: var(--sf-accent);
+  background: color-mix(in srgb, var(--sf-accent) 18%, transparent);
+}
+
+.sf-chip--small {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12.5px;
+}
+
+.sf-chip--danger:not(.is-active) {
+  color: var(--sf-error);
+  border-color: color-mix(in srgb, var(--sf-error) 45%, transparent);
+}
+
+/* stat tiles */
+.sf-accounts-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.sf-stat-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border-radius: var(--sf-radius-md);
+  border: 1px solid var(--sf-border);
+  background: var(--sf-surface);
+}
+
+.sf-stat-tile__value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.sf-stat-tile__label {
+  font-size: 12.5px;
+  color: var(--sf-text-secondary);
+}
+
+.sf-stat-tile--success .sf-stat-tile__value { color: var(--sf-success); }
+.sf-stat-tile--warning .sf-stat-tile__value { color: var(--sf-warning); }
+.sf-stat-tile--error .sf-stat-tile__value { color: var(--sf-error); }
+
+.sf-accounts-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.sf-accounts-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* dashboard summary */
+.sf-accounts-summary__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sf-accounts-summary__counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.sf-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.sf-pill--success {
+  color: var(--sf-success);
+  border-color: color-mix(in srgb, var(--sf-success) 40%, transparent);
+  background: color-mix(in srgb, var(--sf-success) 10%, transparent);
+}
+
+.sf-pill--warning {
+  color: var(--sf-warning);
+  border-color: color-mix(in srgb, var(--sf-warning) 40%, transparent);
+  background: color-mix(in srgb, var(--sf-warning) 10%, transparent);
+}
+
+.sf-pill--error {
+  color: var(--sf-error);
+  border-color: color-mix(in srgb, var(--sf-error) 40%, transparent);
+  background: color-mix(in srgb, var(--sf-error) 10%, transparent);
+}
+
+.sf-accounts-summary__avatars {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.sf-accounts-summary__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--sf-surface-raised);
+  color: var(--sf-text-primary);
+  font-weight: 600;
+  border: 2px solid var(--sf-success);
+}
+
+.sf-accounts-summary__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sf-accounts-summary__avatar--paused { border-color: var(--sf-warning); }
+.sf-accounts-summary__avatar--problem { border-color: var(--sf-error); }
+
+.sf-accounts-summary__more {
+  font-size: 13px;
+  color: var(--sf-text-secondary);
+}
+
+@media (max-width: 640px) {
+  .sf-page-head__title {
+    font-size: 24px;
+  }
+
+  .sf-page-head__actions,
+  .sf-page-head__actions > * {
+    width: 100%;
+  }
+
+  .sf-accounts-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sf-accounts-summary__actions {
+    width: 100%;
+  }
+}

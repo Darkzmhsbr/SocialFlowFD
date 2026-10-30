@@ -7,6 +7,9 @@ import PostEditor from './pages/PostEditor.jsx';
 import AccountStatus from './pages/AccountStatus.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
+// Rodada 6
+import Accounts from './pages/Accounts.jsx';
+import Schedules from './pages/Schedules.jsx';
 
 export default function App() {
   return (
@@ -31,7 +34,26 @@ export default function App() {
             path="/posts"
             element={
               <RequireAuth>
+                {/* Rodada 6: was <Posts /> — the new Agendamentos page.
+                    The previous list stays available at /posts/classic. */}
+                <Schedules />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 6 */}
+          <Route
+            path="/posts/classic"
+            element={
+              <RequireAuth>
                 <Posts />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/accounts"
+            element={
+              <RequireAuth>
+                <Accounts />
               </RequireAuth>
             }
           />
