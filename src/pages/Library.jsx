@@ -426,6 +426,12 @@ export default function Library() {
                     {selected.has(m.id) ? '✓' : ''}
                   </span>
                   <span className="sf-lib-thumb__meta">
+                    {/* Rodada 19B: name used by the spreadsheet import */}
+                    {m.originalName && (
+                      <span className="sf-lib-thumb__name" title={m.originalName}>
+                        {m.originalName}
+                      </span>
+                    )}
                     {m.type === 'VIDEO' ? '▶ Vídeo' : 'Imagem'} {m.bytes ? `· ${formatBytes(m.bytes)}` : ''}
                   </span>
                 </button>

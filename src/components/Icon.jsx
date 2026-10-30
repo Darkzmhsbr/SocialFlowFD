@@ -28,6 +28,9 @@ const PATHS = {
   pulse: 'M3 12h4l2-6 4 12 2-6h6',
   // Rodada 18
   trophy: 'M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M9 20h6M10 17h4',
+  // Rodada 19B
+  sheet: 'M4 4h16v16H4zM4 9h16M4 14h16M10 4v16',
+  report: 'M6 3h9l4 4v14H6zM15 3v4h4M9 17v-3M12 17v-6M15 17v-4',
 };
 
 export default function Icon({ name, size = 20, className = '' }) {

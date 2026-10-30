@@ -1,0 +1,363 @@
+/* Rodada 19B — Importar planilha + Relatórios. */
+
+.sf-imp-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.sf-imp-step {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  background: var(--sf-surface);
+  min-width: 0;
+}
+
+.sf-imp-step > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.sf-imp-step h2,
+.sf-imp-preview h2,
+.sf-imp-result h2,
+.sf-rep-section h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: var(--sf-text-primary);
+}
+
+.sf-imp-step__n {
+  flex: 0 0 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sf-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.sf-imp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.sf-imp-drop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 22px 12px;
+  border: 2px dashed var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  background: var(--sf-surface-raised);
+  color: var(--sf-text-primary);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  word-break: break-word;
+}
+
+.sf-imp-drop:hover {
+  border-color: var(--sf-accent);
+}
+
+.sf-imp-drop.is-busy {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.sf-imp-drop input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.sf-imp-error {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--sf-error);
+  border-radius: var(--sf-radius-sm);
+  color: var(--sf-error);
+  font-size: 14px;
+}
+
+.sf-imp-result,
+.sf-imp-preview,
+.sf-rep-section {
+  padding: 16px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  background: var(--sf-surface);
+  margin-bottom: 16px;
+}
+
+.sf-imp-result h2 {
+  color: var(--sf-success);
+}
+
+.sf-imp-preview__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sf-imp-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sf-imp-count {
+  padding: 3px 10px;
+  border: 1px solid var(--sf-border);
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--sf-text-secondary);
+}
+
+.sf-imp-count--ok {
+  color: var(--sf-success);
+  border-color: var(--sf-success);
+}
+
+.sf-imp-count--warning {
+  color: var(--sf-warning);
+  border-color: var(--sf-warning);
+}
+
+.sf-imp-count--error {
+  color: var(--sf-error);
+  border-color: var(--sf-error);
+}
+
+.sf-imp-filter {
+  display: inline-flex;
+  flex-wrap: wrap;
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: 10px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-sm);
+  background: var(--sf-surface-raised);
+}
+
+.sf-imp-filter button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--sf-text-secondary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sf-imp-filter button.is-active {
+  background: var(--sf-accent);
+  color: #fff;
+}
+
+.sf-imp-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-sm);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.sf-imp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.sf-imp-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 8px 10px;
+  background: var(--sf-surface-raised);
+  color: var(--sf-text-secondary);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sf-imp-table td {
+  padding: 8px 10px;
+  border-top: 1px solid var(--sf-border);
+  color: var(--sf-text-primary);
+  vertical-align: top;
+}
+
+.sf-imp-table tr.is-error td:first-child {
+  box-shadow: inset 3px 0 0 var(--sf-error);
+}
+
+.sf-imp-table tr.is-warning td:first-child {
+  box-shadow: inset 3px 0 0 var(--sf-warning);
+}
+
+.sf-imp-status {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sf-imp-status--ok {
+  color: var(--sf-success);
+}
+
+.sf-imp-status--warning {
+  color: var(--sf-warning);
+}
+
+.sf-imp-status--error {
+  color: var(--sf-error);
+}
+
+.sf-imp-files {
+  min-width: 150px;
+  max-width: 220px;
+  word-break: break-word;
+}
+
+.sf-imp-caption {
+  min-width: 220px;
+  max-width: 360px;
+  word-break: break-word;
+}
+
+.sf-imp-msgs {
+  margin: 6px 0 0;
+  padding-left: 16px;
+  font-size: 12.5px;
+}
+
+.sf-imp-msgs .is-error {
+  color: var(--sf-error);
+}
+
+.sf-imp-msgs .is-warning {
+  color: var(--sf-warning);
+}
+
+.sf-imp-commit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.sf-imp-commit .sf-imp-actions {
+  margin-top: 0;
+}
+
+/* Relatórios */
+.sf-rep {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sf-rep .sf-imp-actions {
+  margin-top: 0;
+}
+
+.sf-rep-section {
+  margin-bottom: 0;
+}
+
+.sf-rep-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.sf-rep-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  background: var(--sf-surface);
+}
+
+.sf-rep-tile__value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--sf-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-rep-tile__label {
+  font-size: 12.5px;
+  color: var(--sf-text-secondary);
+}
+
+.sf-rep-tile.is-warn .sf-rep-tile__value {
+  color: var(--sf-warning);
+}
+
+.sf-rep-tile.is-up .sf-rep-tile__value {
+  color: var(--sf-success);
+}
+
+.sf-rep-top {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--sf-text-primary);
+  font-size: 14px;
+}
+
+.sf-rep-top a {
+  color: var(--sf-accent);
+}
+
+.sf-rep-table td:not(:first-child),
+.sf-rep-table th:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-rep-bad {
+  color: var(--sf-error);
+  font-size: 12px;
+}
+
+.sf-page-head__actions .sf-select {
+  width: auto;
+}
+
+@media (max-width: 600px) {
+  .sf-imp-commit {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sf-imp-commit .sf-button {
+    flex: 1;
+  }
+}

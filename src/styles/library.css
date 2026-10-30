@@ -247,6 +247,15 @@
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
 }
 
+/* Rodada 19B: file name (used in the spreadsheet import) */
+.sf-lib-thumb__name {
+  display: block;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* picker modal */
 .sf-lib-picker {
   max-width: 820px;

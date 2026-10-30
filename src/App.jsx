@@ -28,6 +28,9 @@ import Templates from './pages/Templates.jsx';
 import Monitoring from './pages/Monitoring.jsx';
 // Rodada 18
 import Performance from './pages/Performance.jsx';
+// Rodada 19B
+import ImportPosts from './pages/ImportPosts.jsx';
+import Reports from './pages/Reports.jsx';
 
 export default function App() {
   return (
@@ -73,6 +76,23 @@ export default function App() {
             element={
               <RequireAuth>
                 <Performance />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 19B */}
+          <Route
+            path="/import"
+            element={
+              <RequireAuth>
+                <ImportPosts />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <RequireAuth>
+                <Reports />
               </RequireAuth>
             }
           />

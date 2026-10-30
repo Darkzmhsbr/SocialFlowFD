@@ -19,6 +19,8 @@ const SECTIONS = [
       { to: '/monitoring', label: 'Monitoramento', icon: 'pulse' },
       // Rodada 18
       { to: '/performance', label: 'Desempenho', icon: 'trophy' },
+      // Rodada 19B
+      { to: '/reports', label: 'Relatórios', icon: 'report' },
     ],
   },
   {
@@ -38,6 +40,8 @@ const SECTIONS = [
       { to: '/calendar', label: 'Calendário', icon: 'month' },
       // Rodada 16
       { to: '/templates', label: 'Modelos', icon: 'template' },
+      // Rodada 19B
+      { to: '/import', label: 'Importar planilha', icon: 'sheet' },
       // Rodada 7
       { to: '/library', label: 'Biblioteca', icon: 'image' },
       // Rodada 12
