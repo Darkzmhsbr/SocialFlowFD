@@ -13,7 +13,11 @@ import { useIsAdmin } from '../hooks/useIsAdmin.js';
 const SECTIONS = [
   {
     label: 'Visão geral',
-    items: [{ to: '/dashboard', label: 'Dashboard', icon: 'grid' }],
+    items: [
+      { to: '/dashboard', label: 'Dashboard', icon: 'grid' },
+      // Rodada 17
+      { to: '/monitoring', label: 'Monitoramento', icon: 'pulse' },
+    ],
   },
   {
     label: 'Contas',

@@ -24,6 +24,8 @@ const PATHS = {
   month: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M8 14h2M14 14h2M8 17h2M14 17h2',
   // Rodada 16
   template: 'M5 4h14v16H5zM8 8h8M8 12h8M8 16h5',
+  // Rodada 17
+  pulse: 'M3 12h4l2-6 4 12 2-6h6',
 };
 
 export default function Icon({ name, size = 20, className = '' }) {
