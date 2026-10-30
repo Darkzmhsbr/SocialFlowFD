@@ -5,7 +5,8 @@ import * as postsService from '../services/postsService.js';
 // counters (overview) with the same filters. `refresh({ silent: true })`
 // reloads without the loading state, used by the auto-refresh so the list
 // doesn't flash every 30s. Only the latest request may update state.
-export function useSchedules({ status, types, accountId, q, page = 0, pageSize = 50 }) {
+// Rodada 8: folderId (profile folder) added to the filters.
+export function useSchedules({ status, types, accountId, q, folderId, page = 0, pageSize = 50 }) {
   const [loadState, setLoadState] = useState('loading'); // loading | success | error
   const [posts, setPosts] = useState([]);
   const [total, setTotal] = useState(0);
@@ -22,7 +23,7 @@ export function useSchedules({ status, types, accountId, q, page = 0, pageSize =
         setLoadState('loading');
         setError(null);
       }
-      const filters = { status, types: typesKey ? typesKey.split(',') : undefined, accountId, q };
+      const filters = { status, types: typesKey ? typesKey.split(',') : undefined, accountId, q, folderId };
       try {
         const [list, ov] = await Promise.all([
           postsService.queryPosts({ ...filters, take: pageSize, skip: page * pageSize }),
@@ -42,7 +43,7 @@ export function useSchedules({ status, types, accountId, q, page = 0, pageSize =
         }
       }
     },
-    [status, typesKey, accountId, q, page, pageSize]
+    [status, typesKey, accountId, q, folderId, page, pageSize]
   );
 
   useEffect(() => {

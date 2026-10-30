@@ -15,7 +15,11 @@ const SECTIONS = [
   },
   {
     label: 'Contas',
-    items: [{ to: '/accounts', label: 'Contas', icon: 'users' }],
+    items: [
+      { to: '/accounts', label: 'Contas', icon: 'users' },
+      // Rodada 8
+      { to: '/account-folders', label: 'Pastas', icon: 'folder' },
+    ],
   },
   {
     label: 'Publicação',

@@ -12,6 +12,8 @@ import Accounts from './pages/Accounts.jsx';
 import Schedules from './pages/Schedules.jsx';
 // Rodada 7
 import Library from './pages/Library.jsx';
+// Rodada 8
+import AccountFolders from './pages/AccountFolders.jsx';
 
 export default function App() {
   return (
@@ -48,6 +50,15 @@ export default function App() {
             element={
               <RequireAuth>
                 <Posts />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 8 */}
+          <Route
+            path="/account-folders"
+            element={
+              <RequireAuth>
+                <AccountFolders />
               </RequireAuth>
             }
           />

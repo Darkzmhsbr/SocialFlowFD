@@ -9,6 +9,9 @@ import { LoadingState, ErrorState, EmptyState } from '../components/states.jsx';
 import { useInstagramAccounts } from '../hooks/useInstagramAccounts.js';
 import { readAndClearParam } from '../utils/queryParams.js';
 import '../styles/accounts.css';
+// Rodada 8: filter by profile folder.
+import AccountFolderFilter from '../components/AccountFolderFilter.jsx';
+import { useAccountFolders } from '../hooks/useAccountFolders.js';
 
 // Rodada 6: /accounts — every connected Instagram profile, with search,
 // health filter, connect / manage / disconnect.
@@ -36,6 +39,9 @@ export default function Accounts() {
   const [toast, setToast] = useState(null);
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('all');
+  // Rodada 8
+  const [folderFilter, setFolderFilter] = useState(null);
+  const { folders } = useAccountFolders();
 
   useEffect(() => {
     const info = CALLBACK_MESSAGES[readAndClearParam('instagram')];
@@ -54,12 +60,15 @@ export default function Accounts() {
 
   const visible = useMemo(() => {
     const term = query.trim().replace(/^@/, '').toLowerCase();
+    // Rodada 8
+    const folderIds = folderFilter ? new Set(folders.find((f) => f.id === folderFilter)?.accountIds || []) : null;
     return accounts.filter((a) => {
+      if (folderIds && !folderIds.has(a.id)) return false;
       if (filter !== 'all' && classifyAccount(a) !== filter) return false;
       if (!term) return true;
       return (a.username || '').toLowerCase().includes(term) || (a.name || '').toLowerCase().includes(term);
     });
-  }, [accounts, query, filter]);
+  }, [accounts, query, filter, folderFilter, folders]);
 
   const handleDisconnect = async (id) => {
     try {
@@ -120,6 +129,7 @@ export default function Accounts() {
                   onChange={(e) => setQuery(e.target.value)}
                 />
               </label>
+              <AccountFolderFilter value={folderFilter} onChange={setFolderFilter} />
               <div className="sf-chips" role="tablist" aria-label="Filtrar contas">
                 {FILTERS.map((f) => (
                   <button

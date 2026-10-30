@@ -16,6 +16,9 @@ import { formatDateTime, formatRelative } from '../utils/formatDate.js';
 import '../styles/posts.css';
 import '../styles/batch.css';
 import '../styles/schedules.css';
+// Rodada 8: filter by profile folder (also via /posts?folder=<id>).
+import { useSearchParams } from 'react-router-dom';
+import AccountFolderFilter from '../components/AccountFolderFilter.jsx';
 
 // Rodada 6: Agendamentos — replaces the old /posts list (still at
 // /posts/classic). Search by caption/@profile, status/type/profile filters
@@ -80,6 +83,9 @@ export default function Schedules() {
   const [statusFilter, setStatusFilter] = useState(null);
   const [typeKey, setTypeKey] = useState('all');
   const [accountId, setAccountId] = useState(null);
+  // Rodada 8
+  const [searchParams] = useSearchParams();
+  const [folderId, setFolderId] = useState(() => searchParams.get('folder') || null);
   const [search, setSearch] = useState('');
   const [q, setQ] = useState('');
   const [page, setPage] = useState(0);
@@ -104,6 +110,7 @@ export default function Schedules() {
     types,
     accountId,
     q,
+    folderId,
     page,
     pageSize: POSTS_PAGE_SIZE,
   });
@@ -111,12 +118,12 @@ export default function Schedules() {
   // Any filter change: back to page 1, clear selection.
   useEffect(() => {
     setPage(0);
-  }, [statusFilter, typeKey, accountId, q]);
+  }, [statusFilter, typeKey, accountId, q, folderId]);
 
   useEffect(() => {
     setSelected(new Set());
     setAllFiltered(false);
-  }, [statusFilter, typeKey, accountId, q, page]);
+  }, [statusFilter, typeKey, accountId, q, folderId, page]);
 
   // Emptied the last page (delete/archive): step back.
   useEffect(() => {
@@ -237,7 +244,7 @@ export default function Schedules() {
     setBulkBusy(action);
     try {
       const body = { action, intervalMinutes: bulkInterval, windowMinutes: 10 };
-      if (allFiltered) body.filter = { status: statusFilter, types, accountId, q };
+      if (allFiltered) body.filter = { status: statusFilter, types, accountId, q, folderId };
       else body.ids = [...selected];
       const { result } = await postsService.bulkPosts(body);
       const verb = { 'publish-now': 'na fila para publicar', archive: 'arquivado(s)', delete: 'excluído(s)' }[action];
@@ -313,6 +320,7 @@ export default function Schedules() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </label>
+            <AccountFolderFilter value={folderId} onChange={setFolderId} />
             <AccountFilterSelect value={accountId} onChange={setAccountId} />
           </div>
 
@@ -420,7 +428,7 @@ export default function Schedules() {
           <div className="sf-sched-empty">
             <Icon name="calendar" size={36} />
             <p className="sf-sched-empty__title">
-              {q || accountId || statusFilter || typeKey !== 'all' ? 'Nada encontrado com esses filtros.' : 'Nenhum post ainda.'}
+              {q || accountId || folderId || statusFilter || typeKey !== 'all' ? 'Nada encontrado com esses filtros.' : 'Nenhum post ainda.'}
             </p>
             <Link className="sf-button sf-button--primary" to="/posts/new">
               Criar agendamento

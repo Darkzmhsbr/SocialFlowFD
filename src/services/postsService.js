@@ -104,8 +104,10 @@ export function publishPostBatchNow(batchId, body = {}) {
 
 // --- Rodada 6: Agendamentos page -----------------------------------------
 
-function buildFilterParams({ status, types, accountId, q } = {}) {
+// Rodada 8: folderId = profile folder filter.
+function buildFilterParams({ status, types, accountId, q, folderId } = {}) {
   const params = new URLSearchParams();
+  if (folderId) params.set('folderId', folderId);
   if (status) params.set('status', status);
   if (Array.isArray(types) && types.length > 0) params.set('types', types.join(','));
   if (accountId) params.set('accountId', accountId);

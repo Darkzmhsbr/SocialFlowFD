@@ -1,5 +1,8 @@
 import { useInstagramAccounts } from '../hooks/useInstagramAccounts.js';
 import { BATCH_LIMITS } from '../utils/postConstants.js';
+// Rodada 8: select a whole profile folder in one click.
+import { useAccountFolders } from '../hooks/useAccountFolders.js';
+import '../styles/accountFolders.css';
 
 // Rodada 4: checkbox list of the user's Instagram accounts for the batch
 // composer. Same data source and ACTIVE-only rule as AccountPicker —
@@ -14,6 +17,8 @@ export default function AccountMultiSelect({
   maxAccounts = BATCH_LIMITS.maxAccounts,
 }) {
   const { status, accounts, error } = useInstagramAccounts();
+  // Rodada 8 (declared before the early returns below — hooks rule).
+  const { folders } = useAccountFolders();
 
   if (status === 'loading') {
     return <p className="sf-field-hint">Carregando contas...</p>;
@@ -57,6 +62,25 @@ export default function AccountMultiSelect({
 
   const clearAll = () => onChange([]);
 
+  // Rodada 8: folder chip -> adds its ACTIVE profiles to the selection; if
+  // they are all already selected, removes them instead.
+  const folderActiveIds = (folder) => folder.accountIds.filter((id) => activeIds.has(id));
+  const toggleFolder = (folder) => {
+    const ids = folderActiveIds(folder);
+    if (ids.length === 0) return;
+    const next = new Set(selected);
+    const allIn = ids.every((id) => next.has(id));
+    if (allIn) {
+      ids.forEach((id) => next.delete(id));
+    } else {
+      for (const id of ids) {
+        if (next.size >= maxAccounts) break;
+        next.add(id);
+      }
+    }
+    onChange([...next]);
+  };
+
   return (
     <div className="sf-account-multi">
       <div className="sf-account-multi__header">
@@ -84,6 +108,30 @@ export default function AccountMultiSelect({
           </button>
         </div>
       </div>
+
+      {/* Rodada 8: profile folders */}
+      {folders.length > 0 && (
+        <div className="sf-account-multi__folders">
+          <span className="sf-account-multi__folders-label">Pastas:</span>
+          {folders.map((folder) => {
+            const ids = folderActiveIds(folder);
+            const allIn = ids.length > 0 && ids.every((id) => selected.has(id));
+            return (
+              <button
+                key={folder.id}
+                type="button"
+                className={`sf-chip sf-chip--small${allIn ? ' is-active' : ''}`}
+                onClick={() => toggleFolder(folder)}
+                disabled={disabled || ids.length === 0}
+                title={allIn ? 'Remover os perfis desta pasta da seleção' : 'Selecionar os perfis ativos desta pasta'}
+              >
+                {allIn ? '✓ ' : ''}
+                {folder.name} ({ids.length})
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       <ul className="sf-account-multi__list">
         {activeAccounts.map((account) => {
