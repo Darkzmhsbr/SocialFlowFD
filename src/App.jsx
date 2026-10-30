@@ -10,6 +10,8 @@ import Register from './pages/Register.jsx';
 // Rodada 6
 import Accounts from './pages/Accounts.jsx';
 import Schedules from './pages/Schedules.jsx';
+// Rodada 7
+import Library from './pages/Library.jsx';
 
 export default function App() {
   return (
@@ -46,6 +48,15 @@ export default function App() {
             element={
               <RequireAuth>
                 <Posts />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 7 */}
+          <Route
+            path="/library"
+            element={
+              <RequireAuth>
+                <Library />
               </RequireAuth>
             }
           />

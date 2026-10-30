@@ -17,6 +17,8 @@ import { POST_TYPE_RULES, BATCH_LIMITS, STAGGER_DEFAULTS } from '../utils/postCo
 import * as postsService from '../services/postsService.js';
 // Rodada 4.1: live limits from the backend (BATCH_LIMITS is the fallback).
 import { useBatchLimits } from '../hooks/useBatchLimits.js';
+// Rodada 7: reuse media from the Biblioteca (no new upload).
+import LibraryPicker from './LibraryPicker.jsx';
 import '../styles/posts.css';
 import '../styles/batch.css';
 
@@ -97,6 +99,33 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
   };
 
   const handleCarouselUploaded = (media) => setCarouselMedias((prev) => [...prev, media]);
+
+  // Rodada 7: "Escolher da biblioteca"
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const libraryRemaining = isCarousel
+    ? Math.max(0, (rules?.max || 10) - carouselMedias.length)
+    : Math.max(0, limits.maxItems - items.length);
+
+  const handleLibraryPick = (medias) => {
+    setLibraryOpen(false);
+    if (isCarousel) {
+      setCarouselMedias((prev) => [...prev, ...medias.filter((m) => !prev.some((p) => p.id === m.id))]);
+    } else {
+      medias.forEach((m) => handleItemUploaded(m));
+    }
+    setToast({ tone: 'success', message: `✓ ${medias.length} mídia(s) da biblioteca adicionada(s).` });
+  };
+
+  const libraryButton = (
+    <button
+      type="button"
+      className="sf-button sf-button--secondary"
+      onClick={() => setLibraryOpen(true)}
+      disabled={saving || libraryRemaining === 0}
+    >
+      Escolher da biblioteca
+    </button>
+  );
   const handleCarouselRemove = (mediaId) => setCarouselMedias((prev) => prev.filter((m) => m.id !== mediaId));
   const handleCarouselReorder = (from, to) => {
     if (to < 0 || to >= carouselMedias.length) return;
@@ -260,6 +289,8 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
                   onUploaded={handleCarouselUploaded}
                   onError={(msg) => setToast({ tone: 'error', message: msg })}
                 />
+                {/* Rodada 7 */}
+                {libraryButton}
               </>
             ) : (
               <>
@@ -271,6 +302,8 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
                   onError={(msg) => setToast({ tone: 'error', message: msg })}
                   disabled={saving}
                 />
+                {/* Rodada 7 */}
+                <div className="sf-batch-uploader__row">{libraryButton}</div>
                 <BatchItemList items={items} onChange={setItems} allowsCover={allowsCover} disabled={saving} />
               </>
             )}
@@ -339,6 +372,16 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
           </div>
         </div>
       </DashboardCard>
+
+      {/* Rodada 7 */}
+      {libraryOpen && (
+        <LibraryPicker
+          allowedTypes={rules?.allowed || ['IMAGE', 'VIDEO']}
+          max={libraryRemaining}
+          onPick={handleLibraryPick}
+          onClose={() => setLibraryOpen(false)}
+        />
+      )}
 
       <Toast message={toast?.message} tone={toast?.tone} onClose={() => setToast(null)} />
     </>

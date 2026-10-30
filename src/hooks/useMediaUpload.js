@@ -7,12 +7,13 @@ export function useMediaUpload() {
   const [status, setStatus] = useState('idle'); // idle | uploading | error
   const [error, setError] = useState(null);
 
-  const upload = useCallback(async (file) => {
+  // Rodada 7: optional opts ({ library, folderId }) forwarded to the upload.
+  const upload = useCallback(async (file, opts) => {
     setStatus('uploading');
     setError(null);
     try {
       // Backend returns { success, media: { id, type, url, ... } } at root.
-      const { media } = await mediaService.uploadMediaFile(file);
+      const { media } = await mediaService.uploadMediaFile(file, opts);
       setStatus('idle');
       return media;
     } catch (err) {

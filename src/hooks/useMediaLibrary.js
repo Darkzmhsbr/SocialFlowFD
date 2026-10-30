@@ -21,7 +21,10 @@ export function useMediaLibrary({ typeFilter = null, take = 100 } = {}) {
       // Backend returns { success, medias: [...] } spread at root, matching
       // the apiResponse convention used by listPosts/listAccounts.
       const res = await mediaService.listMedia({ take });
-      const all = res?.medias || [];
+      // Rodada 7 fix: the backend has always answered { media: [...] }, so
+      // `res.medias` was always undefined and the cover picker's
+      // "Biblioteca" tab was always empty. Accept both.
+      const all = res?.medias || res?.media || [];
       const filtered = typeFilter ? all.filter((m) => m.type === typeFilter) : all;
       setItems(filtered);
       setStatus('success');

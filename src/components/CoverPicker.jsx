@@ -59,7 +59,8 @@ export default function CoverPicker({ value, onChange, disabled }) {
 
     setUploadError(null);
     try {
-      const media = await upload(file);
+      // Rodada 7: covers are kept in the Biblioteca (reusable, never auto-deleted).
+      const media = await upload(file, { library: true });
       if (media.type !== 'IMAGE') {
         setUploadError('A capa precisa ser uma imagem. Envie um JPG ou PNG.');
         return;
