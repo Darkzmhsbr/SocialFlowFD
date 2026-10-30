@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import Icon from './Icon.jsx';
 import '../styles/sidebar.css';
+// Rodada 11: admin-only items.
+import { useIsAdmin } from '../hooks/useIsAdmin.js';
 
 // Rodada 6: side menu.
 //   Desktop (> 900px): fixed on the left; "recolher" shrinks it to icons only
@@ -33,11 +35,22 @@ const SECTIONS = [
   // Rodada 10
   {
     label: 'Configurações',
-    items: [{ to: '/meta-app', label: 'App Meta', icon: 'key' }],
+    items: [
+      { to: '/meta-app', label: 'App Meta', icon: 'key' },
+      // Rodada 11: only for platform admins (ADMIN_EMAILS)
+      { to: '/invites', label: 'Convites', icon: 'mail', adminOnly: true },
+    ],
   },
 ];
 
 export default function Sidebar({ collapsed, mobileOpen, onToggleCollapsed, onCloseMobile }) {
+  // Rodada 11: hide admin-only items (the backend also blocks them).
+  const isAdmin = useIsAdmin();
+  const visibleSections = SECTIONS.map((section) => ({
+    ...section,
+    items: section.items.filter((item) => !item.adminOnly || isAdmin),
+  })).filter((section) => section.items.length > 0);
+
   return (
     <>
       <div
@@ -65,7 +78,7 @@ export default function Sidebar({ collapsed, mobileOpen, onToggleCollapsed, onCl
         </div>
 
         <nav className="sf-sidebar__nav">
-          {SECTIONS.map((section) => (
+          {visibleSections.map((section) => ( /* Rodada 11: was SECTIONS.map */
             <div key={section.label} className="sf-sidebar__section">
               <p className="sf-sidebar__section-label">{section.label}</p>
               {section.items.map((item) => (

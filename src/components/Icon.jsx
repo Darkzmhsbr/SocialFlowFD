@@ -16,6 +16,8 @@ const PATHS = {
   image: 'M4 5h16v14H4zM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M20 15l-5-5L5 19',
   // Rodada 10
   key: 'M15 7a4 4 0 1 1-3.9 4.9L4 19v-3h3v-3h3l1.1-1.1A4 4 0 0 1 15 7zM16 8h.01',
+  // Rodada 11
+  mail: 'M4 6h16v12H4zM4 7l8 6 8-6',
 };
 
 export default function Icon({ name, size = 20, className = '' }) {

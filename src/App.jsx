@@ -16,6 +16,8 @@ import Library from './pages/Library.jsx';
 import AccountFolders from './pages/AccountFolders.jsx';
 // Rodada 10
 import MetaApp from './pages/MetaApp.jsx';
+// Rodada 11
+import Invites from './pages/Invites.jsx';
 
 export default function App() {
   return (
@@ -52,6 +54,15 @@ export default function App() {
             element={
               <RequireAuth>
                 <Posts />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 11 (admin only — the page and the API both check) */}
+          <Route
+            path="/invites"
+            element={
+              <RequireAuth>
+                <Invites />
               </RequireAuth>
             }
           />
