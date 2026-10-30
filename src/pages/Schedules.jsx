@@ -272,6 +272,10 @@ export default function Schedules() {
             <p className="sf-page-head__subtitle">Programe, acompanhe e gerencie suas publicações.</p>
           </div>
           <div className="sf-page-head__actions">
+            {/* Rodada 12 */}
+            <Link className="sf-button sf-button--secondary" to="/cleanup">
+              Limpeza
+            </Link>
             <Link className="sf-button sf-button--primary" to="/posts/new">
               + Novo post
             </Link>

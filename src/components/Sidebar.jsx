@@ -30,6 +30,8 @@ const SECTIONS = [
       { to: '/posts', label: 'Agendamentos', icon: 'calendar', end: true },
       // Rodada 7
       { to: '/library', label: 'Biblioteca', icon: 'image' },
+      // Rodada 12
+      { to: '/cleanup', label: 'Limpeza', icon: 'broom' },
     ],
   },
   // Rodada 10

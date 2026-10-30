@@ -18,6 +18,8 @@ import AccountFolders from './pages/AccountFolders.jsx';
 import MetaApp from './pages/MetaApp.jsx';
 // Rodada 11
 import Invites from './pages/Invites.jsx';
+// Rodada 12
+import Cleanup from './pages/Cleanup.jsx';
 
 export default function App() {
   return (
@@ -54,6 +56,15 @@ export default function App() {
             element={
               <RequireAuth>
                 <Posts />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 12 */}
+          <Route
+            path="/cleanup"
+            element={
+              <RequireAuth>
+                <Cleanup />
               </RequireAuth>
             }
           />

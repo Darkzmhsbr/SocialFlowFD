@@ -8,6 +8,8 @@ import { formatDateTime, formatRelative } from '../utils/formatDate.js';
 import '../styles/batch.css';
 // Rodada 5: "Publicar agora" + pause/problem hints.
 import '../styles/notifications.css';
+// Rodada 12: "Arquivo liberado" placeholder.
+import '../styles/cleanup.css';
 
 // Rodada 5: statuses the backend accepts for "Publicar agora".
 const PUBLISH_NOW = new Set(['DRAFT', 'SCHEDULED', 'FAILED']);
@@ -115,7 +117,10 @@ export default function PostCard({ post, onArchive, onDelete, onPublishNow }) {
     <>
       <article className="sf-post-card">
         <div className="sf-post-card__thumb">
-          {displayMedia ? (
+          {/* Rodada 12: file freed by a cleanup (published post) */}
+          {displayMedia?.purged ? (
+            <div className="sf-post-card__purged">Arquivo liberado</div>
+          ) : displayMedia ? (
             displayMedia.type === 'IMAGE' ? (
               <img src={displayMedia.url} alt="" />
             ) : (
