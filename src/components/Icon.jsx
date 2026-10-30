@@ -26,6 +26,8 @@ const PATHS = {
   template: 'M5 4h14v16H5zM8 8h8M8 12h8M8 16h5',
   // Rodada 17
   pulse: 'M3 12h4l2-6 4 12 2-6h6',
+  // Rodada 18
+  trophy: 'M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M9 20h6M10 17h4',
 };
 
 export default function Icon({ name, size = 20, className = '' }) {

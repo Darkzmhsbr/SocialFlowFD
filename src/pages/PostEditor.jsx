@@ -20,6 +20,8 @@ import BatchPostComposer from '../components/BatchPostComposer.jsx';
 // Rodada 16: "Usar modelo" (+ ?template=ID&mode=batch from the Modelos page).
 import { useSearchParams } from 'react-router-dom';
 import TemplatePicker from '../components/TemplatePicker.jsx';
+// Rodada 18: best times hint under "Agendamento".
+import { BestTimesHint } from '../components/BestTimes.jsx';
 
 // Single-screen composer for creating a new post or editing an existing one.
 // The URL param `:id` decides which mode: absent = create, present = edit.
@@ -328,6 +330,8 @@ export default function PostEditor() {
                 onChange={setScheduledFor}
                 disabled={saving}
               />
+              {/* Rodada 18 */}
+              <BestTimesHint accountId={instagramAccountId || null} />
             </section>
 
             <div className="sf-post-editor__submit">

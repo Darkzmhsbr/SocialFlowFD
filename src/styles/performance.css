@@ -1,0 +1,429 @@
+/* Rodada 18 — Desempenho. */
+
+:root {
+  /* Diverging pair (validated dark palette): above / below the profile average */
+  --sf-perf-up: #3987e5;
+  --sf-perf-down: #d95926;
+}
+
+.sf-perf-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.sf-perf-filters .sf-select {
+  width: auto;
+  max-width: 100%;
+}
+
+.sf-perf-seg {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-sm);
+  background: var(--sf-surface-raised);
+}
+
+.sf-perf-seg button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--sf-text-secondary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sf-perf-seg button.is-active {
+  background: var(--sf-accent);
+  color: #fff;
+}
+
+.sf-perf-seg button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sf-perf-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: opacity 0.15s;
+}
+
+.sf-perf-body.is-loading {
+  opacity: 0.55;
+}
+
+.sf-perf-totals {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--sf-text-secondary);
+}
+
+.sf-perf-totals strong {
+  color: var(--sf-text-primary);
+}
+
+.sf-perf-empty {
+  padding: 16px;
+  border: 1px dashed var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--sf-text-secondary);
+}
+
+.sf-perf-empty p {
+  margin: 0;
+}
+
+.sf-perf-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md);
+  background: var(--sf-surface);
+}
+
+.sf-perf-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.sf-perf-h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* ---------- badge ---------- */
+.sf-perf-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-perf-badge--up {
+  color: #cfe2fb;
+  background: color-mix(in srgb, var(--sf-perf-up) 45%, transparent);
+}
+
+.sf-perf-badge--down {
+  color: #fbd9c9;
+  background: color-mix(in srgb, var(--sf-perf-down) 40%, transparent);
+}
+
+.sf-perf-badge--mid {
+  color: var(--sf-text-secondary);
+  background: var(--sf-surface-raised);
+}
+
+.sf-perf-badge--none {
+  color: var(--sf-text-muted);
+  font-weight: 500;
+}
+
+/* ---------- top cards ---------- */
+.sf-perf-top {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+.sf-perf-topcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-sm);
+  background: var(--sf-surface-raised);
+  color: var(--sf-text-primary);
+  text-decoration: none;
+  min-width: 0;
+}
+
+.sf-perf-topcard .sf-perf-thumb {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+}
+
+.sf-perf-topcard__rank {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+}
+
+.sf-perf-topcard__user {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--sf-text-secondary);
+}
+
+.sf-perf-topcard strong {
+  font-size: 14px;
+}
+
+/* ---------- thumb ---------- */
+.sf-perf-thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 55px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--sf-surface-raised);
+}
+
+.sf-perf-thumb--empty {
+  font-size: 10px;
+  color: var(--sf-text-muted);
+}
+
+/* ---------- tables ---------- */
+.sf-perf-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-sm);
+}
+
+.sf-perf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-perf-table th,
+.sf-perf-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--sf-border);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.sf-perf-table th:first-child {
+  text-align: left;
+}
+
+.sf-perf-table tbody tr:last-child th,
+.sf-perf-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sf-perf-table thead th {
+  font-weight: 600;
+  color: var(--sf-text-secondary);
+  background: var(--sf-surface-raised);
+}
+
+.sf-perf-table thead button {
+  border: none;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sf-perf-table thead button.is-active {
+  color: var(--sf-text-primary);
+}
+
+.sf-perf-post {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 260px;
+  max-width: 360px;
+  white-space: normal;
+}
+
+.sf-perf-post > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sf-perf-post span {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--sf-text-secondary);
+}
+
+.sf-perf-post__caption {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--sf-text-muted) !important;
+}
+
+.sf-perf-link {
+  color: var(--sf-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* ---------- best times ---------- */
+.sf-best {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.sf-best__summary {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sf-best__scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.sf-best__grid {
+  border-collapse: separate;
+  border-spacing: 3px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-best__grid th {
+  padding: 2px 6px;
+  font-weight: 600;
+  color: var(--sf-text-secondary);
+  white-space: nowrap;
+}
+
+.sf-best__grid tbody th {
+  text-align: left;
+}
+
+.sf-best__cell {
+  width: 64px;
+  min-width: 56px;
+  height: 34px;
+  border-radius: 6px;
+  background: var(--sf-surface-raised);
+  color: var(--sf-text-primary);
+  font-weight: 600;
+  text-align: center;
+  cursor: default;
+}
+
+.sf-best__cell.is-empty {
+  color: var(--sf-text-muted);
+  font-weight: 500;
+  background: repeating-linear-gradient(135deg, var(--sf-surface-raised) 0 6px, var(--sf-surface) 6px 9px);
+}
+
+.sf-best__total {
+  padding: 0 6px;
+  color: var(--sf-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sf-best__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sf-best__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 12px;
+  color: var(--sf-text-secondary);
+}
+
+.sf-best__swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.sf-best__swatch--up { background: color-mix(in srgb, var(--sf-perf-up) 70%, var(--sf-surface-raised)); }
+.sf-best__swatch--down { background: color-mix(in srgb, var(--sf-perf-down) 70%, var(--sf-surface-raised)); }
+.sf-best__swatch--mid { background: color-mix(in srgb, var(--sf-perf-up) 12%, var(--sf-surface-raised)); }
+.sf-best__swatch--empty { background: repeating-linear-gradient(135deg, var(--sf-surface-raised) 0 3px, var(--sf-surface) 3px 5px); border: 1px solid var(--sf-border); }
+
+.sf-best-hint {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--sf-text-secondary);
+}
+
+.sf-best-hint strong {
+  color: var(--sf-text-primary);
+}
+
+/* ---------- post card badge ---------- */
+.sf-post-card__perf {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--sf-text-secondary);
+}
+
+@media (max-width: 900px) {
+  .sf-perf-top {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .sf-perf-top {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sf-perf-filters .sf-select {
+    flex: 1 1 100%;
+  }
+}

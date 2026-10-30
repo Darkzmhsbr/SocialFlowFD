@@ -13,6 +13,10 @@ import '../styles/cleanup.css';
 // Rodada 16: "Duplicar" (copy as a new draft, then open it in the editor).
 import { useNavigate } from 'react-router-dom';
 import * as postsService from '../services/postsService.js';
+// Rodada 18: result vs the profile average on published posts.
+import '../styles/performance.css';
+
+const PERF_CHECKPOINT_LABEL = { now: 'total', '24h': 'em 24h', '3d': 'em 3 dias', '7d': 'em 7 dias', '30d': 'em 30 dias' };
 
 // Rodada 5: statuses the backend accepts for "Publicar agora".
 const PUBLISH_NOW = new Set(['DRAFT', 'SCHEDULED', 'FAILED']);
@@ -162,6 +166,25 @@ export default function PostCard({ post, onArchive, onDelete, onPublishNow }) {
             {post.batchId && (
               <span className="sf-post-card__batch" title="Criado em lote para vários perfis">
                 Lote
+              </span>
+            )}
+            {/* Rodada 18 */}
+            {post.status === 'PUBLISHED' && post.performance?.value != null && (
+              <span className="sf-post-card__perf">
+                {post.performance.ratio != null && (
+                  <span
+                    className={`sf-perf-badge sf-perf-badge--${
+                      post.performance.ratio >= 1.3 ? 'up' : post.performance.ratio <= 0.7 ? 'down' : 'mid'
+                    }`}
+                    title="Comparado com a média do próprio perfil"
+                  >
+                    {post.performance.ratio >= 1.3 ? '▲ ' : post.performance.ratio <= 0.7 ? '▼ ' : ''}
+                    {String(post.performance.ratio).replace('.', ',')}× a média
+                  </span>
+                )}
+                {post.performance.value.toLocaleString('pt-BR')}{' '}
+                {post.performance.metric === 'views' ? 'visualiz.' : 'alcance'}{' '}
+                {PERF_CHECKPOINT_LABEL[post.performance.checkpoint] || ''}
               </span>
             )}
           </div>

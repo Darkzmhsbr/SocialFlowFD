@@ -23,6 +23,8 @@ import '../styles/posts.css';
 import '../styles/batch.css';
 // Rodada 16: "Usar modelo".
 import TemplatePicker from './TemplatePicker.jsx';
+// Rodada 18: best times hint under "Agendamento".
+import { BestTimesHint } from './BestTimes.jsx';
 
 // Rodada 4: multi-profile batch composer (POST /api/posts/batch).
 //
@@ -357,6 +359,8 @@ export default function BatchPostComposer({ onSwitchToSingle, templateId = null 
           <section className="sf-post-editor__section">
             <h3 className="sf-post-editor__section-title">{scheduleNum}. Agendamento</h3>
             <ScheduleDateTimePicker value={scheduledFor} onChange={setScheduledFor} disabled={saving} />
+            {/* Rodada 18 */}
+            <BestTimesHint accountIds={accountIds} />
             <BatchScheduleOptions
               value={stagger}
               onChange={setStagger}

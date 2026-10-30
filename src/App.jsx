@@ -26,6 +26,8 @@ import Calendar from './pages/Calendar.jsx';
 import Templates from './pages/Templates.jsx';
 // Rodada 17
 import Monitoring from './pages/Monitoring.jsx';
+// Rodada 18
+import Performance from './pages/Performance.jsx';
 
 export default function App() {
   return (
@@ -62,6 +64,15 @@ export default function App() {
             element={
               <RequireAuth>
                 <Posts />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 18 */}
+          <Route
+            path="/performance"
+            element={
+              <RequireAuth>
+                <Performance />
               </RequireAuth>
             }
           />

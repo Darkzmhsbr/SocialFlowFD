@@ -17,6 +17,8 @@ const SECTIONS = [
       { to: '/dashboard', label: 'Dashboard', icon: 'grid' },
       // Rodada 17
       { to: '/monitoring', label: 'Monitoramento', icon: 'pulse' },
+      // Rodada 18
+      { to: '/performance', label: 'Desempenho', icon: 'trophy' },
     ],
   },
   {
