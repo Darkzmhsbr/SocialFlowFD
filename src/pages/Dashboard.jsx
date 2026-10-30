@@ -19,6 +19,8 @@ import AccountHealthBanner from '../components/AccountHealthBanner.jsx';
 // a summary. Set SHOW_FULL_ACCOUNT_LIST to true to bring the old list back.
 import AccountsSummaryCard from '../components/AccountsSummaryCard.jsx';
 const SHOW_FULL_ACCOUNT_LIST = false;
+// Rodada 13: Instagram metrics (Geral / Pasta / Perfil).
+import MetricsPanel from '../components/MetricsPanel.jsx';
 
 const CALLBACK_MESSAGES = {
   connected: { tone: 'success', message: '✓ Instagram conectado com sucesso.' },
@@ -71,6 +73,9 @@ export default function Dashboard() {
             + Novo post
           </Link>
         </div>
+
+        {/* Rodada 13: Instagram metrics */}
+        <MetricsPanel />
 
         {/* KPIs */}
         {statsStatus === 'loading' && (
