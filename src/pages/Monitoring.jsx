@@ -6,6 +6,8 @@ import TelegramAlertsCard from '../components/TelegramAlertsCard.jsx';
 import * as monitoringApi from '../services/monitoringApi.js';
 import { formatDateTime } from '../utils/formatDate.js';
 import '../styles/monitoring.css';
+// Rodada 19A: "Republicar falhas" (Publicar agora, spaced) per profile.
+import * as postsService from '../services/postsService.js';
 
 // Rodada 17: /monitoring — "Monitoramento".
 // Health of every profile with the cause and what to do, operation counters
@@ -28,6 +30,24 @@ const REFRESH_MS = 60 * 1000;
 export default function Monitoring() {
   const [state, setState] = useState({ status: 'loading', data: null, error: null });
   const [filter, setFilter] = useState('problems');
+  // Rodada 19A
+  const [republishing, setRepublishing] = useState(null);
+  const [notice, setNotice] = useState(null);
+
+  const republish = async (username, { accountId, count }) => {
+    if (!window.confirm(`Publicar agora as ${count} falha(s) de @${username}? Elas saem espaçadas, uma de cada vez.`)) return;
+    setRepublishing(accountId);
+    setNotice(null);
+    try {
+      const { result } = await postsService.bulkPosts({ action: 'publish-now', filter: { accountId, status: 'FAILED' } });
+      setNotice({ tone: 'success', text: `✓ ${result.affected} post(s) de @${username} voltaram para a fila.` });
+      load();
+    } catch (err) {
+      setNotice({ tone: 'error', text: err.message });
+    } finally {
+      setRepublishing(null);
+    }
+  };
 
   const load = useCallback(async () => {
     try {
@@ -119,6 +139,9 @@ export default function Monitoring() {
                 </div>
               )}
 
+              {/* Rodada 19A */}
+              {notice && <p className={`sf-tg__msg sf-tg__msg--${notice.tone}`}>{notice.text}</p>}
+
               <ul className="sf-mon-list">
                 {rows.map((r) => (
                   <li key={r.account.id} className={`sf-mon-row sf-mon-row--${r.health}`}>
@@ -146,7 +169,17 @@ export default function Monitoring() {
                               <strong>{i.title}</strong>
                               <span>{i.cause}</span>
                             </div>
-                            {i.action?.to ? (
+                            {/* Rodada 19A: failures of an active profile -> republish in one click */}
+                            {i.republish ? (
+                              <button
+                                type="button"
+                                className="sf-button sf-button--primary sf-button--small"
+                                onClick={() => republish(r.account.username, i.republish)}
+                                disabled={republishing !== null}
+                              >
+                                {republishing === i.republish.accountId ? 'Enviando...' : 'Republicar falhas'}
+                              </button>
+                            ) : i.action?.to ? (
                               <Link className="sf-button sf-button--secondary sf-button--small" to={i.action.to}>
                                 {i.action.label}
                               </Link>
