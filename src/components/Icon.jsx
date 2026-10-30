@@ -22,6 +22,8 @@ const PATHS = {
   broom: 'M14 4l6 6M17 7l-6 6M11 13l-7 7M9 11l4 4M6 14l4 4',
   // Rodada 15
   month: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M8 14h2M14 14h2M8 17h2M14 17h2',
+  // Rodada 16
+  template: 'M5 4h14v16H5zM8 8h8M8 12h8M8 16h5',
 };
 
 export default function Icon({ name, size = 20, className = '' }) {

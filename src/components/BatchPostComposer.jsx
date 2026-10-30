@@ -21,6 +21,8 @@ import { useBatchLimits } from '../hooks/useBatchLimits.js';
 import LibraryPicker from './LibraryPicker.jsx';
 import '../styles/posts.css';
 import '../styles/batch.css';
+// Rodada 16: "Usar modelo".
+import TemplatePicker from './TemplatePicker.jsx';
 
 // Rodada 4: multi-profile batch composer (POST /api/posts/batch).
 //
@@ -36,7 +38,7 @@ import '../styles/batch.css';
 // Shared caption/cover apply to every item unless the item overrides them.
 // The caption accepts spintax ({Oi|Olá}) — the backend picks one option per
 // post, so profiles don't receive identical text.
-export default function BatchPostComposer({ onSwitchToSingle }) {
+export default function BatchPostComposer({ onSwitchToSingle, templateId = null }) { // Rodada 16: + templateId
   const navigate = useNavigate();
 
   const [saving, setSaving] = useState(false);
@@ -96,6 +98,26 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
         cover: null,
       },
     ]);
+  };
+
+  // Rodada 16: type + caption (spintax works here) + the folder's profiles.
+  const applyTemplate = (template) => {
+    if (template.type && template.type !== type) handleTypeChange(template.type);
+    if (template.finalCaption) {
+      if (!caption.trim() || window.confirm('Substituir a legenda geral pela do modelo?')) {
+        setCaption(template.finalCaption);
+      }
+    }
+    let extra = '';
+    const folderIds = template.folder?.accountIds || [];
+    if (folderIds.length > 0) {
+      setAccountIds(folderIds.slice(0, limits.maxAccounts));
+      extra =
+        folderIds.length > limits.maxAccounts
+          ? ` Perfis da pasta ${template.folder.name} marcados (limite de ${limits.maxAccounts} por lote).`
+          : ` Perfis da pasta ${template.folder.name} marcados.`;
+    }
+    setToast({ tone: 'success', message: `✓ Modelo "${template.name}" aplicado.${extra}` });
   };
 
   const handleCarouselUploaded = (media) => setCarouselMedias((prev) => [...prev, media]);
@@ -254,6 +276,12 @@ export default function BatchPostComposer({ onSwitchToSingle }) {
             onChange={(mode) => mode === 'single' && onSwitchToSingle?.()}
             disabled={saving}
           />
+
+          {/* Rodada 16: templates */}
+          <div className="sf-tpl-bar">
+            <TemplatePicker onApply={applyTemplate} autoApplyId={templateId} current={{ type, caption }} disabled={saving} />
+            <span className="sf-field-hint">Preenche tipo, legenda, hashtags e os perfis da pasta do modelo.</span>
+          </div>
 
           <section className="sf-post-editor__section">
             <h3 className="sf-post-editor__section-title">1. Perfis de destino</h3>

@@ -128,6 +128,13 @@ export function getPostsOverview(filters = {}) {
   return request(`/api/posts/overview?${buildFilterParams(filters).toString()}`);
 }
 
+// --- Rodada 16: Duplicar post ---------------------------------------------
+
+// Copy as a new DRAFT. Returns { post }
+export function duplicatePost(id) {
+  return request(`/api/posts/${id}/duplicate`, { method: 'POST' });
+}
+
 // --- Rodada 15: Calendário ------------------------------------------------
 
 // Adds the calendar range (local days) to the usual filters.

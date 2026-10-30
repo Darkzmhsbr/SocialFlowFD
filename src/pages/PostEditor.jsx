@@ -17,6 +17,9 @@ import '../styles/posts.css';
 // Rodada 4: multi-profile batch mode (only when creating a post).
 import PublishModeToggle from '../components/PublishModeToggle.jsx';
 import BatchPostComposer from '../components/BatchPostComposer.jsx';
+// Rodada 16: "Usar modelo" (+ ?template=ID&mode=batch from the Modelos page).
+import { useSearchParams } from 'react-router-dom';
+import TemplatePicker from '../components/TemplatePicker.jsx';
 
 // Single-screen composer for creating a new post or editing an existing one.
 // The URL param `:id` decides which mode: absent = create, present = edit.
@@ -45,6 +48,14 @@ export default function PostEditor() {
   // BatchPostComposer (many media x many profiles). Edit mode is always
   // single — posts of a batch are edited one by one.
   const [publishMode, setPublishMode] = useState('single');
+  // Rodada 16: template chosen on the Modelos page ("Usar").
+  const [searchParams] = useSearchParams();
+  const templateFromUrl = !isEditing ? searchParams.get('template') : null;
+  const batchFromUrl = !isEditing && searchParams.get('mode') === 'batch';
+  useEffect(() => {
+    if (batchFromUrl) setPublishMode('batch');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Load existing post when in edit mode.
   useEffect(() => {
@@ -97,6 +108,18 @@ export default function PostEditor() {
         message: `A capa foi removida — o tipo ${nextType} não aceita capa customizada.`,
       });
     }
+  };
+
+  // Rodada 16: fills type + caption (caption + hashtags) from a template.
+  // The destination folder only matters in batch mode.
+  const applyTemplate = (template) => {
+    if (template.type && template.type !== type) handleTypeChange(template.type);
+    if (template.finalCaption) {
+      if (!caption.trim() || window.confirm('Substituir a legenda atual pela do modelo?')) {
+        setCaption(template.finalCaption);
+      }
+    }
+    setToast({ tone: 'success', message: `✓ Modelo "${template.name}" aplicado.` });
   };
 
   const handleMediaUploaded = (media) => {
@@ -199,7 +222,7 @@ export default function PostEditor() {
       <div className="sf-page">
         <Header />
         <main className="sf-main">
-          <BatchPostComposer onSwitchToSingle={() => setPublishMode('single')} />
+          <BatchPostComposer onSwitchToSingle={() => setPublishMode('single')} templateId={batchFromUrl ? templateFromUrl : null} />
         </main>
       </div>
     );
@@ -240,6 +263,17 @@ export default function PostEditor() {
             {!isEditing && (
               <PublishModeToggle value={publishMode} onChange={setPublishMode} disabled={saving} />
             )}
+
+            {/* Rodada 16: templates */}
+            <div className="sf-tpl-bar">
+              <TemplatePicker
+                onApply={applyTemplate}
+                autoApplyId={batchFromUrl ? null : templateFromUrl}
+                current={{ type, caption }}
+                disabled={saving}
+              />
+              <span className="sf-field-hint">Preenche tipo, legenda e hashtags de um modelo salvo.</span>
+            </div>
 
             <section className="sf-post-editor__section">
               <h3 className="sf-post-editor__section-title">1. Conta de destino</h3>

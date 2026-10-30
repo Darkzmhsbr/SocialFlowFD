@@ -10,6 +10,9 @@ import '../styles/batch.css';
 import '../styles/notifications.css';
 // Rodada 12: "Arquivo liberado" placeholder.
 import '../styles/cleanup.css';
+// Rodada 16: "Duplicar" (copy as a new draft, then open it in the editor).
+import { useNavigate } from 'react-router-dom';
+import * as postsService from '../services/postsService.js';
 
 // Rodada 5: statuses the backend accepts for "Publicar agora".
 const PUBLISH_NOW = new Set(['DRAFT', 'SCHEDULED', 'FAILED']);
@@ -78,6 +81,22 @@ export default function PostCard({ post, onArchive, onDelete, onPublishNow }) {
       ? account.publishPausedUntil
       : null;
   const canPublishNow = Boolean(onPublishNow) && PUBLISH_NOW.has(post.status) && !accountDown;
+
+  // Rodada 16
+  const navigate = useNavigate();
+  const [duplicateError, setDuplicateError] = useState(null);
+  const hasPurgedMedia = Boolean(post.cover?.purged || post.medias?.some((m) => m.purged));
+  const handleDuplicate = async () => {
+    setBusy('duplicate');
+    setDuplicateError(null);
+    try {
+      const { post: copy } = await postsService.duplicatePost(post.id);
+      navigate(`/posts/${copy.id}/edit`);
+    } catch (err) {
+      setDuplicateError(err.message);
+      setBusy(null);
+    }
+  };
 
   const handlePublishNow = async () => {
     const msg =
@@ -211,6 +230,18 @@ export default function PostCard({ post, onArchive, onDelete, onPublishNow }) {
               Editar
             </Link>
           )}
+          {/* Rodada 16 */}
+          {!hasPurgedMedia && (
+            <button
+              type="button"
+              className="sf-button sf-button--secondary"
+              onClick={handleDuplicate}
+              disabled={busy !== null}
+              title="Cria uma cópia como rascunho"
+            >
+              {busy === 'duplicate' ? 'Duplicando...' : 'Duplicar'}
+            </button>
+          )}
           {canArchive && (
             <button
               type="button"
@@ -231,6 +262,8 @@ export default function PostCard({ post, onArchive, onDelete, onPublishNow }) {
               {busy === 'delete' ? 'Excluindo...' : 'Excluir'}
             </button>
           )}
+          {/* Rodada 16 */}
+          {duplicateError && <span className="sf-field-hint sf-field-hint--error">{duplicateError}</span>}
         </div>
       </article>
 

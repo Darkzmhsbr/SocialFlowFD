@@ -22,6 +22,8 @@ import Invites from './pages/Invites.jsx';
 import Cleanup from './pages/Cleanup.jsx';
 // Rodada 15
 import Calendar from './pages/Calendar.jsx';
+// Rodada 16
+import Templates from './pages/Templates.jsx';
 
 export default function App() {
   return (
@@ -58,6 +60,15 @@ export default function App() {
             element={
               <RequireAuth>
                 <Posts />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 16 */}
+          <Route
+            path="/templates"
+            element={
+              <RequireAuth>
+                <Templates />
               </RequireAuth>
             }
           />
