@@ -30,6 +30,11 @@ const SECTIONS = [
       { to: '/library', label: 'Biblioteca', icon: 'image' },
     ],
   },
+  // Rodada 10
+  {
+    label: 'Configurações',
+    items: [{ to: '/meta-app', label: 'App Meta', icon: 'key' }],
+  },
 ];
 
 export default function Sidebar({ collapsed, mobileOpen, onToggleCollapsed, onCloseMobile }) {

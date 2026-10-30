@@ -14,6 +14,8 @@ import Schedules from './pages/Schedules.jsx';
 import Library from './pages/Library.jsx';
 // Rodada 8
 import AccountFolders from './pages/AccountFolders.jsx';
+// Rodada 10
+import MetaApp from './pages/MetaApp.jsx';
 
 export default function App() {
   return (
@@ -50,6 +52,15 @@ export default function App() {
             element={
               <RequireAuth>
                 <Posts />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 10 */}
+          <Route
+            path="/meta-app"
+            element={
+              <RequireAuth>
+                <MetaApp />
               </RequireAuth>
             }
           />
