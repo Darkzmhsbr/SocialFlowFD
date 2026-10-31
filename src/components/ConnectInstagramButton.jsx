@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { getAuthorizeUrl } from '../services/instagramService.js';
 import '../styles/button.css';
+// Rodada 20: choose "Abrir aqui" or "Copiar link (multilogin)".
+import ConnectChoiceModal from './ConnectChoiceModal.jsx';
 
 // Fetches the authorize URL (with Bearer attached automatically), then
 // redirects the browser to Meta. This replaces the old <a href> pattern
@@ -10,6 +12,7 @@ import '../styles/button.css';
 export default function ConnectInstagramButton() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
+  const [choosing, setChoosing] = useState(false); // Rodada 20
 
   const handleClick = async () => {
     setBusy(true);
@@ -28,12 +31,14 @@ export default function ConnectInstagramButton() {
       <button
         type="button"
         className="sf-button sf-button--primary"
-        onClick={handleClick}
+        onClick={() => setChoosing(true)} // Rodada 20: was onClick={handleClick} (now "Abrir aqui" inside the modal)
         disabled={busy}
       >
         {busy ? 'Abrindo Instagram...' : '+ Conectar Instagram'}
       </button>
       {error && <p className="sf-field-hint sf-field-hint--error">{error}</p>}
+      {/* Rodada 20 */}
+      {choosing && <ConnectChoiceModal onClose={() => setChoosing(false)} />}
     </>
   );
 }

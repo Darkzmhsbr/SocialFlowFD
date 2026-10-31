@@ -8,6 +8,13 @@ export async function getAuthorizeUrl() {
   return url;
 }
 
+// Rodada 20: link to copy and open in another browser (Dolphin/multilogin).
+// Returns { url, expiresAt } — valid for 5 minutes, single use.
+export async function getAuthorizeLink({ external = true } = {}) {
+  const { url, expiresAt } = await request(`/api/instagram/authorize-url${external ? '?mode=external' : ''}`);
+  return { url, expiresAt };
+}
+
 // Kept for backwards compatibility with code that may still import it,
 // though ConnectInstagramButton no longer uses this direct-link approach.
 // It just returns the URL string of the (now removed) /connect endpoint.

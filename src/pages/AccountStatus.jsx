@@ -6,6 +6,8 @@ import { EmptyState, ErrorState, LoadingState } from '../components/states.jsx';
 import * as instagramService from '../services/instagramService.js';
 import { formatDateTime, formatRelative } from '../utils/formatDate.js';
 import '../styles/accountStatus.css';
+// Rodada 20: reconnect here or by copied link (multilogin).
+import ConnectChoiceModal from '../components/ConnectChoiceModal.jsx';
 
 // Page: /accounts/:id/status
 //
@@ -24,6 +26,7 @@ export default function AccountStatus() {
   const [error, setError] = useState(null);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
+  const [choosingReconnect, setChoosingReconnect] = useState(false); // Rodada 20
 
   const load = useCallback(async () => {
     setStatus('loading');
@@ -41,6 +44,10 @@ export default function AccountStatus() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Rodada 20: the button now opens the choice (Abrir aqui / Copiar link).
+  // handleReconnect is kept as is (same flow) for reference/other callers.
+  const openReconnect = () => setChoosingReconnect(true);
 
   const handleReconnect = async () => {
     setIsReconnecting(true);
@@ -91,8 +98,15 @@ export default function AccountStatus() {
             data={data}
             isDisconnecting={isDisconnecting}
             isReconnecting={isReconnecting}
-            onReconnect={handleReconnect}
+            onReconnect={openReconnect} // Rodada 20: was onReconnect={handleReconnect}
             onDisconnect={handleDisconnect}
+          />
+        )}
+        {/* Rodada 20 */}
+        {choosingReconnect && data?.account && (
+          <ConnectChoiceModal
+            title={`Reconectar @${data.account.username}`}
+            onClose={() => setChoosingReconnect(false)}
           />
         )}
       </main>

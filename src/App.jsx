@@ -31,6 +31,8 @@ import Performance from './pages/Performance.jsx';
 // Rodada 19B
 import ImportPosts from './pages/ImportPosts.jsx';
 import Reports from './pages/Reports.jsx';
+// Rodada 20
+import ConnectedDone from './pages/ConnectedDone.jsx';
 
 export default function App() {
   return (
@@ -41,6 +43,8 @@ export default function App() {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          {/* Rodada 20: public end of the "Copiar link (multilogin)" flow */}
+          <Route path="/connected" element={<ConnectedDone />} />
 
           {/* Authenticated */}
           <Route
