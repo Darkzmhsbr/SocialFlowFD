@@ -495,13 +495,30 @@ export default function Cleanup() {
                 value={settings.freeStorageAfterDays || ''}
                 onChange={(e) => setSettings((s) => ({ ...s, freeStorageAfterDays: e.target.value ? Number(e.target.value) : null }))}
               >
-                <option value="">Desligado</option>
-                <option value="3">3 dias</option>
-                <option value="7">7 dias</option>
-                <option value="15">15 dias</option>
-                <option value="30">30 dias</option>
+                {/* Rodada 21: mandatory cleanup (admin) — can't turn off or go above the maximum */}
+                <option value="" disabled={Boolean(settings.maxFreeStorageDays)}>Desligado</option>
+                {[3, 7, 15, 30]
+                  .concat([settings.defaultFreeStorageDays, settings.maxFreeStorageDays, settings.freeStorageAfterDays])
+                  .filter((d, i, all) => d && all.indexOf(d) === i)
+                  .sort((a, b) => a - b)
+                  .map((d) => (
+                    <option key={d} value={d} disabled={Boolean(settings.maxFreeStorageDays && d > settings.maxFreeStorageDays)}>
+                      {d} dias
+                    </option>
+                  ))}
               </select>
             </label>
+            {/* Rodada 21 */}
+            {settings.maxFreeStorageDays ? (
+              <p className="sf-field-hint">
+                Obrigatória nesta plataforma: os arquivos de posts publicados são liberados em no máximo{' '}
+                {settings.maxFreeStorageDays} dias.
+              </p>
+            ) : settings.freeStorageIsDefault && settings.freeStorageAfterDays ? (
+              <p className="sf-field-hint">
+                Ligada pelo padrão da plataforma ({settings.freeStorageAfterDays} dias). Você pode mudar ou desligar.
+              </p>
+            ) : null}
             <label className="sf-clean-auto__rule">
               <span>
                 <strong>Arquivar</strong> posts que falharam há mais de

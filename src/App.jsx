@@ -33,6 +33,9 @@ import ImportPosts from './pages/ImportPosts.jsx';
 import Reports from './pages/Reports.jsx';
 // Rodada 20
 import ConnectedDone from './pages/ConnectedDone.jsx';
+// Rodada 21
+import Storage from './pages/Storage.jsx';
+import AdminUsers from './pages/AdminUsers.jsx';
 
 export default function App() {
   return (
@@ -124,6 +127,24 @@ export default function App() {
             element={
               <RequireAuth>
                 <Calendar />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 21 */}
+          <Route
+            path="/storage"
+            element={
+              <RequireAuth>
+                <Storage />
+              </RequireAuth>
+            }
+          />
+          {/* Rodada 21 (admin only — the page and the API both check) */}
+          <Route
+            path="/admin/users"
+            element={
+              <RequireAuth>
+                <AdminUsers />
               </RequireAuth>
             }
           />

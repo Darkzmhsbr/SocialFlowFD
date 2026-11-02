@@ -46,6 +46,8 @@ const SECTIONS = [
       { to: '/library', label: 'Biblioteca', icon: 'image' },
       // Rodada 12
       { to: '/cleanup', label: 'Limpeza', icon: 'broom' },
+      // Rodada 21
+      { to: '/storage', label: 'Armazenamento', icon: 'storage' },
     ],
   },
   // Rodada 10
@@ -55,6 +57,8 @@ const SECTIONS = [
       { to: '/meta-app', label: 'App Meta', icon: 'key' },
       // Rodada 11: only for platform admins (ADMIN_EMAILS)
       { to: '/invites', label: 'Convites', icon: 'mail', adminOnly: true },
+      // Rodada 21: users, storage quotas and platform rules (admin only)
+      { to: '/admin/users', label: 'Usuários', icon: 'shield', adminOnly: true },
     ],
   },
 ];

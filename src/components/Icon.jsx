@@ -31,6 +31,9 @@ const PATHS = {
   // Rodada 19B
   sheet: 'M4 4h16v16H4zM4 9h16M4 14h16M10 4v16',
   report: 'M6 3h9l4 4v14H6zM15 3v4h4M9 17v-3M12 17v-6M15 17v-4',
+  // Rodada 21
+  storage: 'M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3',
+  shield: 'M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM9 12l2 2 4-4',
 };
 
 export default function Icon({ name, size = 20, className = '' }) {

@@ -9,6 +9,9 @@ import { useLibraryUploader, LIBRARY_UPLOAD_MAX_FILES } from '../hooks/useLibrar
 import * as mediaService from '../services/mediaService.js';
 import '../styles/accounts.css';
 import '../styles/library.css';
+// Rodada 21: storage usage bar
+import StorageBar from '../components/StorageBar.jsx';
+import * as storageApi from '../services/storageApi.js';
 
 // Rodada 7: /library — folders + uploads kept for reuse. Media here is
 // never deleted automatically when a post is deleted. "Envios do editor"
@@ -36,6 +39,7 @@ export default function Library() {
   const [busy, setBusy] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const [toast, setToast] = useState(null);
+  const [storage, setStorage] = useState(null); // Rodada 21
   const fileRef = useRef(null);
   const seq = useRef(0);
 
@@ -78,6 +82,18 @@ export default function Library() {
     loadFolders();
   }, [loadFolders]);
 
+  // Rodada 21: how much space is used (refreshed after uploads/removals)
+  const loadStorage = useCallback(() => {
+    storageApi
+      .getStorage()
+      .then(({ storage: s }) => setStorage(s))
+      .catch(() => setStorage(null));
+  }, []);
+
+  useEffect(() => {
+    loadStorage();
+  }, [loadStorage]);
+
   useEffect(() => {
     loadItems();
   }, [loadItems]);
@@ -93,6 +109,7 @@ export default function Library() {
   const refreshAll = () => {
     loadFolders();
     loadItems({ silent: true });
+    loadStorage(); // Rodada 21
   };
 
   // ---------- upload ----------
@@ -234,6 +251,9 @@ export default function Library() {
           </div>
         </div>
 
+        {/* Rodada 21 */}
+        <StorageBar storage={storage} compact />
+
         <input
           ref={fileRef}
           type="file"
@@ -293,6 +313,10 @@ export default function Library() {
           <p className="sf-lib-note">
             Mídias enviadas direto no Novo post. Elas são apagadas sozinhas quando os posts que as usam são excluídos —
             selecione e use “Guardar na biblioteca” para mantê-las.
+            {/* Rodada 21 */}
+            {storage?.orphanSweepHours
+              ? ` Envios que não estão em nenhum post são apagados ${storage.orphanSweepHours}h depois do envio.`
+              : ''}
           </p>
         )}
 

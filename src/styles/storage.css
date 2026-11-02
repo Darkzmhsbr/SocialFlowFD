@@ -1,0 +1,343 @@
+/* Rodada 21 — Armazenamento (usuário) + Usuários (admin). */
+
+.sf-storage-card {
+  padding: 18px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md, 12px);
+  background: var(--sf-surface);
+  margin-bottom: 16px;
+}
+
+.sf-storage-card h2 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  color: var(--sf-text-primary);
+}
+
+.sf-storage-bar {
+  display: flex;
+  width: 100%;
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--sf-surface-raised);
+  gap: 2px;
+}
+
+.sf-storage-bar__seg {
+  display: block;
+  height: 100%;
+}
+
+.sf-storage-full__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.sf-storage-full__value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--sf-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-storage-pct {
+  color: var(--sf-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.is-high .sf-storage-pct,
+.is-high .sf-storage-full__value {
+  color: var(--sf-warning);
+}
+
+.is-full .sf-storage-pct,
+.is-full .sf-storage-full__value {
+  color: var(--sf-error);
+}
+
+.sf-storage-legend {
+  list-style: none;
+  margin: 12px 0 4px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 6px 24px;
+  font-size: 13px;
+}
+
+.sf-storage-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sf-storage-legend__dot {
+  flex: 0 0 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.sf-storage-legend__label {
+  color: var(--sf-text-primary);
+}
+
+.sf-storage-legend__value {
+  margin-left: auto;
+  color: var(--sf-text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sf-storage-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sf-storage-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md, 12px);
+  background: var(--sf-surface);
+}
+
+.sf-storage-group h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--sf-text-primary);
+}
+
+.sf-storage-group__value {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--sf-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-storage-group__value span {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--sf-text-secondary);
+}
+
+.sf-storage-group .sf-field-hint {
+  margin: 0;
+  flex: 1;
+}
+
+.sf-storage-group__action {
+  margin-top: 4px;
+}
+
+.sf-storage-auto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sf-storage-auto p {
+  margin: 0;
+  color: var(--sf-text-primary);
+  font-size: 14px;
+}
+
+.sf-storage-auto a,
+.sf-storage-compact a {
+  color: var(--sf-accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* compact (Biblioteca) */
+.sf-storage-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md, 12px);
+  background: var(--sf-surface);
+  font-size: 13.5px;
+  color: var(--sf-text-primary);
+}
+
+.sf-storage-compact__line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sf-storage-compact .sf-storage-bar {
+  height: 8px;
+}
+
+.sf-storage-warn {
+  margin: 0;
+  color: var(--sf-error);
+  font-weight: 600;
+}
+
+/* admin */
+.sf-admin-rules__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sf-admin-rules__grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--sf-text-secondary);
+}
+
+.sf-admin-rules__check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--sf-text-primary);
+}
+
+.sf-admin-rules .sf-field-hint {
+  margin: 0 0 12px;
+}
+
+.sf-admin-users__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.sf-admin-users__head h2 {
+  margin: 0;
+}
+
+.sf-admin-users__head .sf-input {
+  max-width: 280px;
+}
+
+.sf-admin-users__wrap {
+  overflow-x: auto;
+}
+
+.sf-admin-users {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.sf-admin-users th {
+  padding: 8px 10px;
+  text-align: left;
+  color: var(--sf-text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--sf-surface-raised);
+}
+
+.sf-admin-users td {
+  padding: 10px;
+  border-top: 1px solid var(--sf-border);
+  color: var(--sf-text-primary);
+  vertical-align: middle;
+}
+
+.sf-admin-users__email {
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.sf-admin-users__name {
+  display: block;
+}
+
+.sf-admin-badge {
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--sf-accent);
+}
+
+.sf-admin-users__usage {
+  min-width: 170px;
+}
+
+.sf-admin-users__usage > span:first-child {
+  display: block;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-admin-meter {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--sf-surface-raised);
+  overflow: hidden;
+}
+
+.sf-admin-meter span {
+  display: block;
+  height: 100%;
+  background: #3987e5;
+}
+
+.sf-admin-meter.is-high span {
+  background: var(--sf-warning);
+}
+
+.sf-admin-meter.is-full span {
+  background: var(--sf-error);
+}
+
+.sf-admin-users__quota {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 250px;
+}
+
+.sf-admin-users__quota .sf-select {
+  width: auto;
+}
+
+.sf-admin-users__gb {
+  width: 80px;
+}
+
+.sf-storage-card > .sf-field-hint {
+  margin: 10px 0 0;
+}
