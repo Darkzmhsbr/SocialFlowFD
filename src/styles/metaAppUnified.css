@@ -1,0 +1,46 @@
+/* Rodada 22 — App Meta: escolha do tipo de login (unificado / Instagram). */
+
+.sf-meta-type {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.sf-meta-type__option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--sf-border);
+  border-radius: var(--sf-radius-md, 12px);
+  background: var(--sf-surface-raised);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.sf-meta-type__option.is-active {
+  border-color: var(--sf-accent);
+}
+
+.sf-meta-type__option input {
+  margin-top: 3px;
+  accent-color: var(--sf-accent);
+}
+
+.sf-meta-type__option span {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sf-meta-type__option strong {
+  color: var(--sf-text-primary);
+  font-size: 14px;
+}
+
+.sf-meta-type__option small {
+  color: var(--sf-text-secondary);
+  font-size: 12.5px;
+  line-height: 1.4;
+}

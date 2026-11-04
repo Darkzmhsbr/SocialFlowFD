@@ -7,6 +7,8 @@ import * as metaAppService from '../services/metaAppService.js';
 import { formatDateTime } from '../utils/formatDate.js';
 import '../styles/accounts.css';
 import '../styles/metaApp.css';
+// Rodada 22: login type selector
+import '../styles/metaAppUnified.css';
 
 // Rodada 10: /meta-app — optional own Instagram app per user. Without it,
 // connections use the SocialFlow default app (as always).
@@ -25,6 +27,9 @@ export default function MetaApp() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
   const [copied, setCopied] = useState(false);
+  // Rodada 22: INSTAGRAM (Instagram login, older apps) | UNIFIED (newer apps)
+  const [loginType, setLoginType] = useState('INSTAGRAM');
+  const [configId, setConfigId] = useState('');
 
   const load = useCallback(async () => {
     try {
@@ -32,6 +37,8 @@ export default function MetaApp() {
       setData(res);
       setAppId(res.credential?.appId || '');
       setAppSecret('');
+      setLoginType(res.credential?.loginType || 'INSTAGRAM'); // Rodada 22
+      setConfigId(res.credential?.configId || ''); // Rodada 22
       setState('success');
     } catch (err) {
       setError(err.message);
@@ -59,6 +66,8 @@ export default function MetaApp() {
     try {
       const body = { appId: appId.trim() };
       if (appSecret.trim()) body.appSecret = appSecret.trim();
+      body.loginType = loginType; // Rodada 22
+      if (loginType === 'UNIFIED') body.configId = configId.trim(); // Rodada 22
       await metaAppService.saveMetaApp(body);
       setToast({
         tone: 'success',
@@ -116,6 +125,16 @@ export default function MetaApp() {
                     <p className="sf-meta-card__line">
                       ID do app: <code>{cred.appId}</code> · chave ••••{cred.secretLast4 || '????'}
                     </p>
+                    {/* Rodada 22 */}
+                    <p className="sf-meta-card__line">
+                      {cred.loginType === 'UNIFIED' ? (
+                        <>
+                          Login unificado · configuração <code>{cred.configId}</code>
+                        </>
+                      ) : (
+                        'Login do Instagram'
+                      )}
+                    </p>
                     <span className={`sf-pill sf-pill--${info.tone}`}>{info.label}</span>
                     {cred.status === 'VERIFIED' && cred.verifiedAt && (
                       <p className="sf-field-hint">Confirmado em {formatDateTime(cred.verifiedAt)}</p>
@@ -160,9 +179,40 @@ export default function MetaApp() {
 
             <form className="sf-meta-card" onSubmit={save}>
               <h2 className="sf-meta-card__title">{cred ? 'Alterar credenciais' : 'Cadastrar meu app'}</h2>
+              {/* Rodada 22: which setup the app shows in Casos de uso › API do Instagram */}
+              <div className="sf-meta-type" role="radiogroup" aria-label="Tipo de login do app">
+                <label className={`sf-meta-type__option${loginType === 'UNIFIED' ? ' is-active' : ''}`}>
+                  <input
+                    type="radio"
+                    name="loginType"
+                    value="UNIFIED"
+                    checked={loginType === 'UNIFIED'}
+                    onChange={() => setLoginType('UNIFIED')}
+                  />
+                  <span>
+                    <strong>Login unificado</strong>
+                    <small>Apps novos: o menu mostra “API setup with Unified login”.</small>
+                  </span>
+                </label>
+                <label className={`sf-meta-type__option${loginType === 'INSTAGRAM' ? ' is-active' : ''}`}>
+                  <input
+                    type="radio"
+                    name="loginType"
+                    value="INSTAGRAM"
+                    checked={loginType === 'INSTAGRAM'}
+                    onChange={() => setLoginType('INSTAGRAM')}
+                  />
+                  <span>
+                    <strong>Login do Instagram</strong>
+                    <small>Apps antigos: o menu mostra “Configuração da API com login do Instagram”.</small>
+                  </span>
+                </label>
+              </div>
               <div className="sf-meta-form">
                 <label className="sf-meta-form__field">
-                  <span className="sf-field-label">ID do app do Instagram</span>
+                  <span className="sf-field-label">
+                    {loginType === 'UNIFIED' ? 'ID do aplicativo' : 'ID do app do Instagram'} {/* Rodada 22 */}
+                  </span>
                   <input
                     className="sf-meta-input"
                     inputMode="numeric"
@@ -174,7 +224,9 @@ export default function MetaApp() {
                   />
                 </label>
                 <label className="sf-meta-form__field">
-                  <span className="sf-field-label">Chave secreta do app do Instagram</span>
+                  <span className="sf-field-label">
+                    {loginType === 'UNIFIED' ? 'Chave secreta do aplicativo' : 'Chave secreta do app do Instagram'} {/* Rodada 22 */}
+                  </span>
                   <input
                     className="sf-meta-input"
                     type="password"
@@ -185,12 +237,37 @@ export default function MetaApp() {
                     required={!cred}
                   />
                 </label>
+                {/* Rodada 22 */}
+                {loginType === 'UNIFIED' && (
+                  <label className="sf-meta-form__field">
+                    <span className="sf-field-label">ID da configuração</span>
+                    <input
+                      className="sf-meta-input"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      value={configId}
+                      onChange={(e) => setConfigId(e.target.value)}
+                      placeholder="Ex.: 1653370306229199"
+                      required
+                    />
+                  </label>
+                )}
               </div>
+              {/* Rodada 22 */}
+              {loginType === 'UNIFIED' && (
+                <p className="sf-meta-warning">
+                  ⚠ No login unificado, o ID e a chave são os do <strong>app principal</strong> (Configurações do app ›
+                  Básico › “ID do aplicativo” e “Chave secreta do aplicativo”). O ID da configuração fica em Casos de uso ›
+                  API do Instagram › <strong>API setup with Unified login</strong> (“Identificação da configuração”).
+                </p>
+              )}
+              {loginType !== 'UNIFIED' && ( /* Rodada 22: shown only for Instagram login */
               <p className="sf-meta-warning">
                 ⚠ Use o ID e a chave do <strong>app do Instagram</strong> (Casos de uso › API do Instagram › Configuração da
                 API com login do Instagram) — <strong>não</strong> os do app principal da Meta, que aparecem em
                 Configurações do app › Básico. São pares diferentes e o login falha com o par errado.
               </p>
+              )}
               <div className="sf-meta-form__actions">
                 <button type="submit" className="sf-button sf-button--primary" disabled={saving}>
                   {saving ? 'Salvando...' : 'Salvar app'}
@@ -203,6 +280,41 @@ export default function MetaApp() {
               </div>
             </form>
 
+            {/* Rodada 22: step by step for newer apps (Unified login) */}
+            {loginType === 'UNIFIED' && (
+              <section className="sf-meta-card">
+                <h2 className="sf-meta-card__title">Passo a passo — login unificado (apps novos)</h2>
+                <ol className="sf-meta-steps">
+                  <li>
+                    Em <strong>business.facebook.com</strong>, tenha um <strong>portfólio empresarial</strong> com as
+                    contas do Instagram que você vai usar (Configurações › Contas › Contas do Instagram).
+                  </li>
+                  <li>
+                    Em <strong>developers.facebook.com</strong> › <strong>Criar app</strong>, escolha o caso de uso
+                    “Gerenciar mensagens e conteúdo no Instagram” e vincule o app ao seu portfólio.
+                  </li>
+                  <li>
+                    Abra <strong>Casos de uso › API do Instagram › API setup with Unified login</strong> e clique em{' '}
+                    <strong>Criar nova configuração</strong> (token de usuário do sistema, ativos: contas do Instagram).
+                  </li>
+                  <li>
+                    Na mesma tela, em <strong>Registrar um novo URL de redirecionamento</strong>, cole a{' '}
+                    <strong>URL de retorno</strong> acima e clique em <strong>Salvar</strong>.
+                  </li>
+                  <li>
+                    Copie a <strong>Identificação da configuração</strong>. Em <strong>Configurações do app › Básico</strong>
+                    , copie o <strong>ID do aplicativo</strong> e a <strong>Chave secreta do aplicativo</strong>. Cole os
+                    três no formulário acima, com “Login unificado” marcado, e salve.
+                  </li>
+                  <li>
+                    Clique em <strong>+ Conectar Instagram</strong>, entre no Facebook e <strong>marque as contas do
+                    Instagram</strong> que quer conectar — todas entram de uma vez. Não precisa convidar testadores.
+                  </li>
+                </ol>
+              </section>
+            )}
+
+            {loginType !== 'UNIFIED' && ( /* Rodada 22: the original guide (Instagram login) */
             <section className="sf-meta-card">
               <h2 className="sf-meta-card__title">Como criar o seu app (passo a passo)</h2>
               <ol className="sf-meta-steps">
@@ -237,6 +349,7 @@ export default function MetaApp() {
                 restrição de mensagens podem não conectar (limitação da própria Meta).
               </p>
             </section>
+            )}
           </>
         )}
       </main>

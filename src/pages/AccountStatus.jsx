@@ -280,6 +280,10 @@ function describeTokenExpiration(iso) {
   if (Number.isNaN(expiresAt.getTime())) {
     return { label: 'Desconhecido', hint: null, tone: 'warning' };
   }
+  // Rodada 22: Unified login (system-user token) never expires.
+  if (expiresAt.getUTCFullYear() >= 2090) {
+    return { label: 'Não expira', hint: 'Conectado pelo login unificado' };
+  }
   const now = Date.now();
   const diffMs = expiresAt.getTime() - now;
   const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
