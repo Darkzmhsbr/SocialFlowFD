@@ -10,7 +10,7 @@ import '../styles/library.css';
 //   max:          how many can still be added
 const PAGE_SIZE = 48;
 
-export default function LibraryPicker({ allowedTypes = ['IMAGE', 'VIDEO'], max = 50, onPick, onClose }) {
+export default function LibraryPicker({ allowedTypes = ['IMAGE', 'VIDEO'], max = 100, onPick, onClose }) {
   const onlyType = allowedTypes.length === 1 ? allowedTypes[0] : null;
   const [folders, setFolders] = useState([]);
   const [counts, setCounts] = useState({ all: 0, root: 0 });

@@ -59,8 +59,49 @@ export function RatioBadge({ ratio, compact = false }) {
 }
 
 function Thumb({ post }) {
-  if (post.thumbnailUrl) return <img className="sf-perf-thumb" src={post.thumbnailUrl} alt="" loading="lazy" />;
-  if (post.videoUrl) return <video className="sf-perf-thumb" src={post.videoUrl} muted preload="metadata" />;
+  const [primaryFailed, setPrimaryFailed] = useState(false);
+  const [fallbackFailed, setFallbackFailed] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
+
+  useEffect(() => {
+    setPrimaryFailed(false);
+    setFallbackFailed(false);
+    setVideoFailed(false);
+  }, [post.id, post.thumbnailUrl, post.fallbackThumbnailUrl, post.videoUrl]);
+
+  if (post.thumbnailUrl && !primaryFailed) {
+    return (
+      <img
+        className="sf-perf-thumb"
+        src={post.thumbnailUrl}
+        alt=""
+        loading="lazy"
+        onError={() => setPrimaryFailed(true)}
+      />
+    );
+  }
+  if (post.fallbackThumbnailUrl && !fallbackFailed) {
+    return (
+      <img
+        className="sf-perf-thumb"
+        src={post.fallbackThumbnailUrl}
+        alt=""
+        loading="lazy"
+        onError={() => setFallbackFailed(true)}
+      />
+    );
+  }
+  if (post.videoUrl && !videoFailed) {
+    return (
+      <video
+        className="sf-perf-thumb"
+        src={post.videoUrl}
+        muted
+        preload="metadata"
+        onError={() => setVideoFailed(true)}
+      />
+    );
+  }
   return <span className="sf-perf-thumb sf-perf-thumb--empty">{POST_TYPE_LABELS[post.type]?.slice(0, 5) || '—'}</span>;
 }
 
@@ -140,7 +181,7 @@ export default function Performance() {
     setExporting(true);
     try {
       const { performance } = await performanceApi.getPerformancePosts({ ...filters, sort, take: 2000, skip: 0 });
-      const blob = new Blob([`﻿${toCsv(performance.rows)}`], { type: 'text/csv;charset=utf-8' });
+      const blob = new Blob([`\uFEFF${toCsv(performance.rows)}`], { type: 'text/csv;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

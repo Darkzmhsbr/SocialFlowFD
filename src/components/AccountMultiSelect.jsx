@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useInstagramAccounts } from '../hooks/useInstagramAccounts.js';
 import { BATCH_LIMITS } from '../utils/postConstants.js';
 // Rodada 8: select a whole profile folder in one click.
@@ -192,8 +193,21 @@ export default function AccountMultiSelect({
 }
 
 function AccountAvatar({ account }) {
-  if (account.profilePictureUrl) {
-    return <img className="sf-account-multi__avatar" src={account.profilePictureUrl} alt="" />;
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [account.profilePictureUrl]);
+
+  if (account.profilePictureUrl && !imgError) {
+    return (
+      <img
+        className="sf-account-multi__avatar"
+        src={account.profilePictureUrl}
+        alt=""
+        onError={() => setImgError(true)}
+      />
+    );
   }
   return (
     <span className="sf-account-multi__avatar sf-account-multi__avatar--initial" aria-hidden="true">

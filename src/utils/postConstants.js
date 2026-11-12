@@ -63,9 +63,9 @@ export const STATUS_TABS = [
 // Rodada 4.1: now only a FALLBACK — useBatchLimits() loads the real values
 // from GET /api/posts/batch/limits. Values raised (were 20 / 30 / 300).
 export const BATCH_LIMITS = {
-  maxItems: 50,
+  maxItems: 100,
   maxAccounts: 50,
-  maxPosts: 2500,
+  maxPosts: 5000,
 };
 
 // Stagger options (minutes) offered in the batch composer.
